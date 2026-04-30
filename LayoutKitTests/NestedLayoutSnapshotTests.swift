@@ -25,7 +25,7 @@ struct NestedLayoutSnapshotTests {
         )
 
         // Create 4 child collections, each with a horizontal stack
-        for i in 0..<4 {
+        for _ in 0..<4 {
             let childCollection = SKCollectionNode(
                 layoutBuilder: { _ in LayoutTestFactory.horizontalStack(
                     alignment: .center,
@@ -64,7 +64,7 @@ struct NestedLayoutSnapshotTests {
             contentInsets: Insets(uniform: 20)
         )
 
-        for i in 0..<4 {
+        for _ in 0..<4 {
             let childCollection = SKCollectionNode(
                 layoutBuilder: { _ in LayoutTestFactory.verticalStack(
                     alignment: .center,
@@ -104,7 +104,7 @@ struct NestedLayoutSnapshotTests {
             contentInsets: Insets(uniform: 20)
         )
 
-        for i in 0..<4 {
+        for _ in 0..<4 {
             let childCollection = SKCollectionNode(
                 layoutBuilder: { _ in LayoutTestFactory.circularLayout(
                     startAngle: 0,
@@ -144,7 +144,7 @@ struct NestedLayoutSnapshotTests {
             contentInsets: Insets(uniform: 20)
         )
 
-        for i in 0..<2 {
+        for _ in 0..<2 {
             let childCollection = SKCollectionNode(
                 layoutBuilder: { _ in LayoutTestFactory.gridLayout(
                     rows: 2,
@@ -277,7 +277,7 @@ struct NestedLayoutSnapshotTests {
             contentInsets: Insets(uniform: 20)
         )
 
-        for i in 0..<2 {
+        for _ in 0..<2 {
             // Level 2: Child stack (vertical)
             let childCollection = SKCollectionNode(
                 layoutBuilder: { _ in LayoutTestFactory.verticalStack(
@@ -289,7 +289,7 @@ struct NestedLayoutSnapshotTests {
                 contentInsets: Insets(uniform: 10)
             )
 
-            for j in 0..<2 {
+            for _ in 0..<2 {
                 // Level 3: Grandchild circular layout
                 let grandchildCollection = SKCollectionNode(
                     layoutBuilder: { _ in LayoutTestFactory.circularLayout(
@@ -324,7 +324,7 @@ struct NestedLayoutSnapshotTests {
 
 // MARK: - Mock Data Source
 
-private class MockDataSource: CollectionLayoutDataSource {
+private final class MockDataSource: CollectionLayoutDataSource {
     let itemCount: Int
 
     init(itemCount: Int) {

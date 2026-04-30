@@ -176,6 +176,7 @@ struct SnapshotTestHelpers {
     ///   - showIndex: Whether to show index labels
     ///   - contentInsets: Content insets for the collection
     /// - Returns: Configured SKCollectionNode
+    @MainActor
     static func createTestCollection(
         layout: CollectionLayout,
         nodeCount: Int,

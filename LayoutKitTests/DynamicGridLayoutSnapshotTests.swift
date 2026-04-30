@@ -212,7 +212,7 @@ struct DynamicGridLayoutSnapshotTests {
 
 // MARK: - Mock Data Source
 
-private class MockDataSource: CollectionLayoutDataSource {
+private final class MockDataSource: CollectionLayoutDataSource {
     let itemCount: Int
 
     init(itemCount: Int) {
