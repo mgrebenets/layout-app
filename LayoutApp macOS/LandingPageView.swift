@@ -33,7 +33,6 @@ struct ScenarioDetailView: View {
     var body: some View {
         ZStack {
             SpriteView(scene: LayoutScenarioScene.create(for: scenario, contextMenuState: contextMenuState))
-                .ignoresSafeArea()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationTitle(scenario.title)
         }
