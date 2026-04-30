@@ -195,8 +195,12 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
     /// - Parameter point: Point in this node's coordinate space
     /// - Returns: The node at that point, or nil
     public func layoutableNode(at point: CGPoint) -> LayoutableNode? {
-        // Iterate in reverse to check top-most nodes first (respecting addition order/z-index)
-        let candidates = layoutableChildren.reversed()
+        // Sort by zPosition descending to check top-most (visually front) nodes first
+        let candidates = layoutableChildren.sorted { a, b in
+            let zA = (a as? SKNode)?.zPosition ?? 0
+            let zB = (b as? SKNode)?.zPosition ?? 0
+            return zA > zB
+        }
 
         for child in candidates {
             if let childCollection = child as? SKCollectionNode {
@@ -209,10 +213,7 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
 
         for child in candidates {
             if let skNode = child as? SKNode {
-                // Get the node's frame in parent coordinates
                 let nodeFrame = skNode.frame
-
-                // Check if the point (in parent coordinates) is within the node's frame
                 if nodeFrame.contains(point) {
                     return child
                 }
