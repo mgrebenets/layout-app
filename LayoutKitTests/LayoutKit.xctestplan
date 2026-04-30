@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "2CB1992F-392B-4E64-B3C2-0353EC16213F",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:LayoutApp.xcodeproj",
+        "identifier" : "89FE5E692ED854DA00F298C6",
+        "name" : "LayoutKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

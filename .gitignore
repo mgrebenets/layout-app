@@ -1,0 +1,36 @@
+# Raw Resources
+RawResources
+
+# xcode noise
+build/*
+*.pbxuser
+*.mode1v3
+.picasa.ini
+xcuserdata/
+*.xcuserdatad
+*.xccheckout
+
+# appcode
+.idea/tasks.xml
+.idea/workspace.xml
+
+# old skool
+.svn
+
+# Pods
+Pods
+Podfile.lock
+
+# Carthage
+Carthage
+
+# osx noise
+.DS_Store
+profile
+
+# windows noise
+Thumbs.db
+thumbs.db
+
+# temp
+*.tmp
