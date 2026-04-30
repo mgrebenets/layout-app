@@ -45,6 +45,14 @@ public class NodeCoordinator {
         registeredCollections.remove(collection)
     }
 
+    /// Unregister all collections
+    public func unregisterAll() {
+        registeredCollections.removeAll()
+    }
+
+    /// Whether a drag operation is currently in progress
+    public var isTracking: Bool { isDragging }
+
     /// Set the parent container for holding "free" nodes during drag
     /// - Parameter container: The parent container (typically the scene)
     public func setParentContainer(_ container: SKNode) {

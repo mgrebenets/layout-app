@@ -49,6 +49,12 @@ public class LayoutScenarioScene: SKScene {
         setupScenario()
     }
 
+    public override func didChangeSize(_ oldSize: CGSize) {
+        super.didChangeSize(oldSize)
+        guard scene?.view != nil, !coordinator.isTracking else { return }
+        setupScenario()
+    }
+
     private func setupCallbacks() {
         guard let state = contextMenuState else { return }
 
@@ -161,6 +167,7 @@ public class LayoutScenarioScene: SKScene {
 
     private func setupScenario() {
         removeAllChildren()
+        coordinator.unregisterAll()
 
         // Clear state
         layoutContainers.removeAll()

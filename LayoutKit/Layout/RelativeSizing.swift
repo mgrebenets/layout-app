@@ -150,15 +150,15 @@ public struct RelativeSizing: Sendable, Hashable {
     public var aspectRatio: CGFloat {
         // Try to infer aspect ratio from the relationship between width and height specs
         switch (widthSpec, heightSpec) {
-        case (.containerWidth(let wPct), .itemWidth(let hRatio)):
+        case (.containerWidth, .itemWidth(let hRatio)):
             // height = width * hRatio, so aspectRatio = width/height = 1/hRatio
             return 1.0 / hRatio
-        case (.itemHeight(let wRatio), .containerHeight(let hPct)):
+        case (.itemHeight(let wRatio), .containerHeight):
             // width = height * wRatio, so aspectRatio = width/height = wRatio
             return wRatio
-        case (.containerSmallest(let wPct), .itemWidth(let hRatio)):
+        case (.containerSmallest, .itemWidth(let hRatio)):
             return 1.0 / hRatio
-        case (.containerLargest(let wPct), .itemWidth(let hRatio)):
+        case (.containerLargest, .itemWidth(let hRatio)):
             return 1.0 / hRatio
         default:
             return 1.0

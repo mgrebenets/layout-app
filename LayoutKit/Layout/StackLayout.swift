@@ -162,21 +162,6 @@ public struct StackLayoutStrategy: LayoutStrategy {
     public func computeContentSize(in context: LayoutContext, itemCount: Int) -> CGSize {
         guard itemCount > 0 else { return .zero }
 
-        let contentRect = context.contentRect
-
-        // Calculate item size
-        let itemSize: CGSize
-        if let sizing = itemSizing {
-            itemSize = sizing.size(for: contentRect.size)
-        } else {
-            switch axis {
-            case .horizontal:
-                itemSize = CGSize(width: 100, height: contentRect.height)
-            case .vertical:
-                itemSize = CGSize(width: contentRect.width, height: 44)
-            }
-        }
-
         // Content size is always the container size (items compress to fit)
         return context.bounds.size
     }
