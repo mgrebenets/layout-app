@@ -199,7 +199,7 @@ struct LayoutTestFactory {
     }
 
     /// Create a test collection from a configuration
-    static func createCollection(from config: TestConfig) -> SKCollectionNode {
+    @MainActor static func createCollection(from config: TestConfig) -> SKCollectionNode {
         return SnapshotTestHelpers.createTestCollection(
             layout: config.layout,
             nodeCount: config.nodeCount,
