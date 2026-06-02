@@ -2,8 +2,11 @@ import Foundation
 
 /// A pool for reusing nodes to improve performance and reduce memory allocations.
 /// Nodes are stored by their reuse identifier and can be dequeued for reuse.
-/// Thread-safe through actor isolation.
-public actor NodePool {
+/// Thread-safe by running on the main actor: the pool exclusively manages UI (`SKNode`) nodes,
+/// which are themselves main-actor isolated, so a separate actor would only add hops and isolated-
+/// conformance friction.
+@MainActor
+public final class NodePool {
 
     // MARK: - Private Properties
 

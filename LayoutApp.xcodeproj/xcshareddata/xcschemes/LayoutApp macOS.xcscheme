@@ -52,6 +52,16 @@
                ReferencedContainer = "container:LayoutApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "89EEC5A12FCD931200B72F0D"
+               BuildableName = "GameEngineTests.xctest"
+               ReferencedContainer = "container:LayoutApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

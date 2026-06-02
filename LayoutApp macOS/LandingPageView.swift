@@ -4,7 +4,8 @@ import LayoutKit
 
 struct LandingPageView: View {
     let scenarios = [
-        Scenario(title: "Overview", description: "Full layout system demonstration", type: .overview)
+        Scenario(title: "Overview", description: "Full layout system demonstration", type: .overview),
+        Scenario(title: "War", description: "Play the War card game end-to-end on the GameEngine", type: .war)
     ]
 
     var body: some View {
@@ -30,9 +31,19 @@ struct ScenarioDetailView: View {
     let scenario: Scenario
     @StateObject private var contextMenuState = ContextMenuState()
 
+    /// Layout scenarios share `LayoutScenarioScene`; the War scenario uses its own scene.
+    private func makeScene() -> SKScene {
+        switch scenario.type {
+        case .war:
+            return WarScene(size: CGSize(width: 1024, height: 768))
+        default:
+            return LayoutScenarioScene.create(for: scenario, contextMenuState: contextMenuState)
+        }
+    }
+
     var body: some View {
         ZStack {
-            SpriteView(scene: LayoutScenarioScene.create(for: scenario, contextMenuState: contextMenuState))
+            SpriteView(scene: makeScene())
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationTitle(scenario.title)
         }

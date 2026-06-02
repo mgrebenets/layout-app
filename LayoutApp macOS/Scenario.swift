@@ -20,4 +20,5 @@ public enum ScenarioType: CaseIterable {
     case nodePooling       // Performance test with NodePool
     case circularAndStack  // Focus on Circular and Stack layouts
     case dragAndDrop       // Interaction test with NodeCoordinator
+    case war               // Playable War card game on the GameEngine
 }

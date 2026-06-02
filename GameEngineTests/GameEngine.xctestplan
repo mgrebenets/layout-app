@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "9BC7EE0D-525B-4FFD-B4A4-85D8876C87D1",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:LayoutApp.xcodeproj",
+        "identifier" : "89EEC5A12FCD931200B72F0D",
+        "name" : "GameEngineTests"
+      }
+    }
+  ],
+  "version" : 1
+}

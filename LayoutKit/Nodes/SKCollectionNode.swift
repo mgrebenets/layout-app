@@ -91,13 +91,9 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
 
     /// Add a child node to this collection
     public func addLayoutableChild(_ child: LayoutableNode) {
-        print("   ➕ addLayoutableChild called")
-        print("      Children before: \(layoutableChildren.count)")
 
         // Check if child is already in the array
         if let existingIndex = layoutableChildren.firstIndex(where: { $0 === child }) {
-            print("      ⚠️ WARNING: Child already exists at index \(existingIndex)!")
-            print("      This will create a duplicate entry!")
         }
 
         layoutableChildren.append(child)
@@ -107,17 +103,13 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
         // Add to SpriteKit hierarchy if it's an SKNode
         if let skNode = child as? SKNode {
             addChild(skNode)
-            print("      Added SKNode to hierarchy at position: \(skNode.position)")
         }
 
         invalidateLayout()
-        print("      Children after: \(layoutableChildren.count), layout invalidated")
 
         // Verify no duplicates
         let uniqueChildren = Set(layoutableChildren.map { ObjectIdentifier($0) })
         if uniqueChildren.count != layoutableChildren.count {
-            print("      ❌ ERROR: Duplicate entries detected in layoutableChildren!")
-            print("      Unique: \(uniqueChildren.count), Total: \(layoutableChildren.count)")
         }
     }
 
@@ -138,36 +130,26 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
     /// Remove a child node and return its index
     /// - Returns: The index of the removed child, or nil if not found
     public func removeLayoutableChildWithIndex(_ child: LayoutableNode) -> Int? {
-        print("   ➖ removeLayoutableChildWithIndex called")
-        print("      Children before: \(layoutableChildren.count)")
 
         if let index = layoutableChildren.firstIndex(where: { $0 === child }) {
-            print("      Found child at index \(index), removing...")
             layoutableChildren.remove(at: index)
 
             // Remove from SpriteKit hierarchy if it's an SKNode
             if let skNode = child as? SKNode {
                 skNode.removeFromParent()
-                print("      Removed from SKNode hierarchy")
             }
 
             invalidateLayout()
-            print("      Children after: \(layoutableChildren.count), layout invalidated")
             return index
         }
-        print("      ⚠️ WARNING: Child not found in layoutableChildren!")
         return nil
     }
 
     /// Insert a child node at a specific index
     public func insertLayoutableChild(_ child: LayoutableNode, at index: Int) {
-        print("   ➕ insertLayoutableChild at index \(index)")
-        print("      Children before: \(layoutableChildren.count)")
 
         // Check if child is already in the array
         if let existingIndex = layoutableChildren.firstIndex(where: { $0 === child }) {
-            print("      ⚠️ WARNING: Child already exists at index \(existingIndex)!")
-            print("      This will create a duplicate entry!")
         }
 
         let safeIndex = min(max(0, index), layoutableChildren.count)
@@ -176,17 +158,13 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
         // Add to SpriteKit hierarchy if it's an SKNode
         if let skNode = child as? SKNode {
             addChild(skNode)
-            print("      Inserted SKNode at index \(safeIndex)")
         }
 
         invalidateLayout()
-        print("      Children after: \(layoutableChildren.count), layout invalidated")
 
         // Verify no duplicates
         let uniqueChildren = Set(layoutableChildren.map { ObjectIdentifier($0) })
         if uniqueChildren.count != layoutableChildren.count {
-            print("      ❌ ERROR: Duplicate entries detected in layoutableChildren!")
-            print("      Unique: \(uniqueChildren.count), Total: \(layoutableChildren.count)")
         }
     }
 
@@ -244,18 +222,12 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
 
     /// Force layout to be performed immediately, regardless of needsLayout flag
     public func forceLayout() {
-        print("🔄 forceLayout called on collection")
-        print("   layoutFrame: \(layoutFrame)")
-        print("   children count: \(layoutableChildren.count)")
         guard layoutFrame.width > 0 && layoutFrame.height > 0 else {
-            print("   ❌ Invalid bounds, skipping layout")
             // Don't layout with zero or invalid bounds
             return
         }
-        print("   ✅ Performing layout")
         needsLayout = false
         performLayout()
-        print("   Layout complete. First child position: \(layoutableChildren.first.map { ($0 as? SKNode)?.position ?? .zero } ?? .zero)")
     }
 
     // MARK: - Node Pool Methods
@@ -274,7 +246,7 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
             return create()
         }
 
-        return await pool.dequeueReusableNode(withIdentifier: identifier, create: create)
+        return pool.dequeueReusableNode(withIdentifier: identifier, create: create)
     }
 
     /// Remove all children and return reusable nodes to the pool
@@ -282,7 +254,7 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
         // Return reusable children to the pool
         let reusableChildren = layoutableChildren.compactMap { $0 as? ReusableNode }
         if let pool = nodePool {
-            await pool.enqueueForReuse(reusableChildren)
+            pool.enqueueForReuse(reusableChildren)
         }
 
         // Remove all children
@@ -304,7 +276,7 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
 
             // Return to pool if reusable
             if let reusableNode = child as? ReusableNode, let pool = nodePool {
-                await pool.enqueueForReuse(reusableNode)
+                pool.enqueueForReuse(reusableNode)
             }
         }
     }
@@ -320,10 +292,6 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
 
     /// Calculate and apply layout to all children
     private func performLayout() {
-        print("   🎯 performLayout starting")
-        print("      Layout type: \(type(of: layout))")
-        print("      layoutFrame: \(layoutFrame)")
-        print("      children count: \(layoutableChildren.count)")
         // Layout children in local coordinate space
         // Use layoutFrame.size as the bounds for layout calculation
         let localBounds = CGRect(
@@ -339,11 +307,9 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
         )
 
         let attributes = layout.layoutAttributes(in: context)
-        print("      attributes count: \(attributes.count)")
 
         for attr in attributes {
             guard attr.index < layoutableChildren.count else {
-                print("      ⚠️ Attribute index \(attr.index) out of bounds (children: \(layoutableChildren.count))")
                 continue
             }
             let child = layoutableChildren[attr.index]
@@ -357,13 +323,9 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
                 height: attr.frame.height
             )
 
-            print("      Child \(attr.index): layout frame=\(attr.frame), local frame=\(localFrame), zIndex=\(attr.zIndex)")
 
             // For SKCollectionNode children, set size in layoutFrame and position separately
             if let childCollection = child as? SKCollectionNode {
-                print("      📦 Child is a collection:")
-                print("         attr.frame from layout: \(attr.frame)")
-                print("         Setting layoutFrame size: \(attr.frame.width) x \(attr.frame.height)")
                 // Set layoutFrame with just size (no position offset)
                 childCollection.layoutFrame = CGRect(x: 0, y: 0, width: attr.frame.width, height: attr.frame.height)
                 // Set position in parent's local coordinate space
@@ -371,7 +333,6 @@ public class SKCollectionNode: SKNode, CollectionNode, CollectionLayoutDataSourc
                 childCollection.layoutZIndex = attr.zIndex
                 // Set z-position directly from layout's z-index
                 childCollection.zPosition = CGFloat(attr.zIndex)
-                print("         Child collection layoutFrame after setting: \(childCollection.layoutFrame)")
                 // Trigger child layout
                 childCollection.layoutIfNeeded()
             } else {
