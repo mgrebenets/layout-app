@@ -150,33 +150,31 @@ final class DurakScene: SKScene {
     private func drawHand(_ seat: SeatID, faceUp: Bool, rowY: CGFloat) {
         let cards = state.core[hand(seat)]?.cards ?? []
         guard !cards.isEmpty else { return }
-        let count = cards.count
 
-        // Size cards to fit the available width so every card is fully visible (no overlap).
-        // Small hands keep a comfortable max size; large hands shrink to fit.
-        let available = size.width * 0.82
-        let cardWidth = min(92, available / CGFloat(count))
-        let cardHeight = min(120, cardWidth * 1.45)
-        let labelFont = min(22, max(9, cardWidth * 0.32))
+        // Cards keep a comfortable fixed size. StackLayout spreads them edge-to-edge when they fit,
+        // and automatically fans (overlaps) them when the hand is large — the top-left corner index
+        // keeps every card identifiable even when centres get covered.
+        let cardHeight: CGFloat = 120
+        let cardSize = CGSize(width: cardHeight * 0.76, height: cardHeight)
 
         let collection = SKCollectionNode(layoutBuilder: { node in
             StackLayout(
                 axis: .horizontal,
                 itemSizing: RelativeSizing(
-                    widthSpec: .containerWidth(percentage: 1.0 / CGFloat(count)),
+                    widthSpec: .containerHeight(percentage: 0.76),
                     heightSpec: .containerHeight(percentage: 1.0)
                 ),
-                gapPercentage: 0,
+                // 1.0 = step one full card width (touching, no overlap). When the cards don't fit the
+                // layoutFrame, StackLayout compresses the step automatically → an overlapping fan.
+                gapPercentage: 1.0,
                 alignment: .center,
                 zOrder: .ascending,
                 dataSource: node
             )
         })
-        // layoutFrame width == total card width → the hand is centred on the collection's position.
-        collection.layoutFrame = CGRect(x: 0, y: 0, width: cardWidth * CGFloat(count), height: cardHeight)
+        collection.layoutFrame = CGRect(x: 0, y: 0, width: size.width * 0.92, height: cardHeight)
         for card in cards {
-            let node = makeCardNode(face: faceUp ? state.registry.face(card) : nil,
-                                    faceUp: faceUp, labelFontSize: labelFont)
+            let node = makeCardNode(face: faceUp ? state.registry.face(card) : nil, faceUp: faceUp, size: cardSize)
             if faceUp { node.name = "card_\(card.value)" }
             collection.addLayoutableChild(node)
         }
@@ -191,12 +189,12 @@ final class DurakScene: SKScene {
         let spacing: CGFloat = 100
         var x = size.width / 2 - CGFloat(pairs.count - 1) * spacing / 2
         for pair in pairs {
-            let attack = makeCardNode(face: state.registry.face(pair.attack), faceUp: true)
+            let attack = makeCardNode(face: state.registry.face(pair.attack), faceUp: true, size: CGSize(width: 80, height: 112))
             attack.layoutFrame = CGRect(x: 0, y: 0, width: 80, height: 112)
             attack.position = CGPoint(x: x, y: size.height / 2)
             tableNode.addChild(attack)
             if let defense = pair.defense {
-                let node = makeCardNode(face: state.registry.face(defense), faceUp: true)
+                let node = makeCardNode(face: state.registry.face(defense), faceUp: true, size: CGSize(width: 80, height: 112))
                 node.layoutFrame = CGRect(x: 0, y: 0, width: 80, height: 112)
                 node.position = CGPoint(x: x + 18, y: size.height / 2 - 24)
                 node.zPosition = 1
@@ -212,14 +210,14 @@ final class DurakScene: SKScene {
         let deckY = size.height / 2
 
         if let trumpCard = deck.first { // bottom of the deck, turned up
-            let trump = makeCardNode(face: state.registry.face(trumpCard), faceUp: true)
+            let trump = makeCardNode(face: state.registry.face(trumpCard), faceUp: true, size: CGSize(width: 80, height: 112))
             trump.layoutFrame = CGRect(x: 0, y: 0, width: 80, height: 112)
             trump.zRotation = .pi / 2
             trump.position = CGPoint(x: deckX + 34, y: deckY)
             tableNode.addChild(trump)
         }
         if !deck.isEmpty {
-            let back = makeCardNode(face: nil, faceUp: false)
+            let back = makeCardNode(face: nil, faceUp: false, size: CGSize(width: 80, height: 112))
             back.layoutFrame = CGRect(x: 0, y: 0, width: 80, height: 112)
             back.position = CGPoint(x: deckX, y: deckY)
             tableNode.addChild(back)
@@ -241,24 +239,37 @@ final class DurakScene: SKScene {
 
     // MARK: - Nodes
 
-    private func makeCardNode(face: StandardFace?, faceUp: Bool, labelFontSize: CGFloat = 22) -> LayoutableSKShapeNode {
+    private func makeCardNode(face: StandardFace?, faceUp: Bool, size cardSize: CGSize, labelFontSize: CGFloat = 22) -> LayoutableSKShapeNode {
         let node = LayoutableSKShapeNode()
         node.lineWidth = 2
-        if faceUp, let face {
-            node.fillColor = .white
-            node.strokeColor = .darkGray
-            let label = SKLabelNode(text: face.description)
-            label.fontName = "Menlo-Bold"
-            label.fontSize = labelFontSize
-            label.fontColor = (face.suit.color == .red) ? .systemRed : .black
-            label.verticalAlignmentMode = .center
-            label.horizontalAlignmentMode = .center
-            label.zPosition = 1
-            node.addChild(label)
-        } else {
+        guard faceUp, let face else {
             node.fillColor = SKColor(red: 0.16, green: 0.30, blue: 0.62, alpha: 1.0)
             node.strokeColor = .white
+            return node
         }
+        node.fillColor = .white
+        node.strokeColor = .darkGray
+        let color: SKColor = (face.suit.color == .red) ? .systemRed : .black
+
+        let center = SKLabelNode(text: face.description)
+        center.fontName = "Menlo-Bold"
+        center.fontSize = labelFontSize
+        center.fontColor = color
+        center.verticalAlignmentMode = .center
+        center.horizontalAlignmentMode = .center
+        center.zPosition = 1
+        node.addChild(center)
+
+        // Top-left corner index — stays visible when a large hand fans/overlaps the cards.
+        let corner = SKLabelNode(text: face.description)
+        corner.fontName = "Menlo-Bold"
+        corner.fontSize = max(10, min(15, cardSize.width * 0.22))
+        corner.fontColor = color
+        corner.verticalAlignmentMode = .top
+        corner.horizontalAlignmentMode = .left
+        corner.position = CGPoint(x: -cardSize.width / 2 + 5, y: cardSize.height / 2 - 4)
+        corner.zPosition = 1
+        node.addChild(corner)
         return node
     }
 
