@@ -28,6 +28,19 @@ struct DurakTests {
         }
     }
 
+    /// Lower a move and run `advance` to a fixpoint — what the driver does.
+    private func play(_ move: DurakMove, _ state: inout DurakState, _ game: DurakGame) {
+        fold(game.lower(move, in: state), into: &state, with: game)
+        var guardCount = 0
+        while true {
+            let batch = game.advance(state)
+            if batch.isEmpty { break }
+            fold(batch, into: &state, with: game)
+            guardCount += 1
+            if guardCount > 10_000 { break }
+        }
+    }
+
     @Test("Beating rules: higher same-suit wins, trump beats non-trump")
     func beats() {
         let trump = Suit.spades
@@ -45,7 +58,7 @@ struct DurakTests {
         #expect(state.core[hand(s0)]?.count == 6)
         #expect(state.core[hand(s1)]?.count == 6)
         #expect(state.core[.deck]?.count == 24)
-        #expect(state.defender != state.attacker)
+        #expect(state.defender != state.principalAttacker)
         #expect(total(state) == 36)
         let trumpCard = state.core[.deck]!.cards.first! // bottom of the deck
         #expect(state.registry.face(trumpCard).suit == state.trump)
@@ -56,7 +69,7 @@ struct DurakTests {
     @Test("Attack then defend updates the table and ping-pongs the turn")
     func attackDefendFlow() {
         var driver = GameDriver(DurakGame(), seatCount: 2, seed: 7)
-        let attacker = driver.state.attacker
+        let attacker = driver.state.principalAttacker
         guard case let .attack(card)? = driver.legalMoves(for: attacker).first else {
             Issue.record("attacker had no opening attack"); return
         }
@@ -69,16 +82,14 @@ struct DurakTests {
         #expect(defenderMoves.contains(.take))
         if let defend = defenderMoves.first(where: { if case .defend = $0 { return true } else { return false } }) {
             driver.apply(defend)
-            #expect(driver.state.phase == .attacking)
-            #expect(driver.state.table.first?.defense != nil)
-            #expect(driver.state.core.currentSeat == driver.state.attacker)
+            #expect(driver.state.phase == .attacking) // bout continues (throw-in offered) or a new bout began
         }
     }
 
     @Test("Taking scoops the table into the defender's hand and keeps the roles")
     func takePicksUp() {
         var driver = GameDriver(DurakGame(rules: DurakRules(throwInOnTake: false)), seatCount: 2, seed: 11)
-        let attacker = driver.state.attacker
+        let attacker = driver.state.principalAttacker
         let defender = driver.state.defender
         let defenderHandBefore = driver.state.core[hand(defender)]?.count ?? 0
         guard case let .attack(card)? = driver.legalMoves(for: attacker).first else {
@@ -90,7 +101,7 @@ struct DurakTests {
         // Defender kept the attacking card (count grows by at least 1, minus any draw-ups balance out
         // because the deck still has cards so both refill to 6).
         #expect((driver.state.core[hand(defender)]?.count ?? 0) >= defenderHandBefore)
-        #expect(driver.state.attacker == attacker)   // roles unchanged after a take
+        #expect(driver.state.principalAttacker == attacker)   // roles unchanged after a take
         #expect(total(driver.state) == 36)
     }
 
@@ -116,24 +127,59 @@ struct DurakTests {
         core.zones[hand(s0)]?.push(contentsOf: [CardID(0), CardID(1), CardID(2)])
         core.zones[hand(s1)]?.push(contentsOf: [CardID(3), CardID(4), CardID(5)])
         var state = DurakState(core: core, registry: registry, trump: .spades,
-                               attacker: s0, defender: s1, table: [], phase: .attacking)
+                               principalAttacker: s0, defender: s1, table: [],
+                               phase: .attacking, passed: [], out: [], firstBout: false)
         let game = DurakGame(rules: DurakRules(throwInOnTake: true))
 
-        fold(game.lower(.attack(CardID(0)), in: state), into: &state, with: game) // attack 7♥
+        play(.attack(CardID(0)), &state, game) // attack 7♥
         #expect(state.phase == .defending)
 
-        fold(game.lower(.take, in: state), into: &state, with: game)               // defender declares take
+        play(.take, &state, game)              // defender declares take; advance offers the attacker
         #expect(state.phase == .takingThrowIn)
         #expect(state.core.currentSeat == s0)
 
         let options = game.legalMoves(for: s0, in: state)
-        #expect(options.contains(.attack(CardID(1))))  // matching 7♣ can be thrown in
-        #expect(!options.contains(.attack(CardID(2))))  // the king doesn't match
+        #expect(options.contains(.attack(CardID(1)))) // matching 7♣ can be thrown in
+        #expect(!options.contains(.attack(CardID(2)))) // the king doesn't match
 
-        fold(game.lower(.attack(CardID(1)), in: state), into: &state, with: game)  // throw in 7♣
-        fold(game.lower(.pass, in: state), into: &state, with: game)               // done → defender scoops
+        play(.attack(CardID(1)), &state, game) // throw in 7♣; s0 has nothing else → auto-done, scoop
         #expect(state.table.isEmpty)
         #expect((state.core[hand(s1)]?.count ?? 0) == 5) // had 3, took both 7s
+    }
+
+    @Test("First-bout cap limits the opening bout to 5 attack cards")
+    func firstBoutCap() {
+        // Five beaten pairs already on the table; the attacker holds a 6th card matching a table rank.
+        let faces = [
+            StandardFace(.six, .clubs), StandardFace(.six, .diamonds), StandardFace(.six, .hearts),
+            StandardFace(.six, .spades), StandardFace(.seven, .clubs),       // 0–4 attacks
+            StandardFace(.eight, .clubs), StandardFace(.eight, .diamonds), StandardFace(.eight, .hearts),
+            StandardFace(.eight, .spades), StandardFace(.nine, .clubs),      // 5–9 defenses
+            StandardFace(.seven, .diamonds),                                 // 10 — attacker's 6th card (a seven)
+            StandardFace(.nine, .diamonds), StandardFace(.nine, .hearts), StandardFace(.nine, .spades), // 11–13 defender
+        ]
+        let registry = CardRegistry(faces)
+        func build(firstBout: Bool) -> DurakState {
+            var core = CoreState(seatCount: 2, rng: SeededRNG(seed: 0), currentSeat: s0)
+            core.apply(.createZone(.deck, .hidden))
+            core.apply(.createZone(.table, .public))
+            core.apply(.createZone(.discard, .hidden))
+            core.apply(.createZone(hand(s0), .ownerOnly))
+            core.apply(.createZone(hand(s1), .ownerOnly))
+            core.zones[.table]?.push(contentsOf: (0...9).map { CardID($0) })
+            core.zones[hand(s0)]?.push(CardID(10))
+            core.zones[hand(s1)]?.push(contentsOf: [CardID(11), CardID(12), CardID(13)])
+            let table = (0...4).map { TablePair(attack: CardID($0), defense: CardID($0 + 5)) }
+            return DurakState(core: core, registry: registry, trump: .spades,
+                              principalAttacker: s0, defender: s1, table: table,
+                              phase: .attacking, passed: [], out: [], firstBout: firstBout)
+        }
+        let game = DurakGame() // firstAttackMaxFive defaults on
+
+        // Opening bout: 5 attacks already → capped, no 6th throw-in.
+        #expect(!game.legalMoves(for: s0, in: build(firstBout: true)).contains(.attack(CardID(10))))
+        // A later bout allows a 6th card (room permitting).
+        #expect(game.legalMoves(for: s0, in: build(firstBout: false)).contains(.attack(CardID(10))))
     }
 
     @Test("AI vs AI playthrough terminates with an outcome and conserves 36 cards")
@@ -151,5 +197,39 @@ struct DurakTests {
         }
         #expect(driver.outcome != nil)
         #expect(total(driver.state) == 36)
+    }
+
+    @Test("Multiplayer AI playthroughs terminate and conserve all 36 cards",
+          arguments: [3, 4, 5, 6])
+    func multiplayerPlaythrough(players: Int) {
+        let game = DurakGame()
+        let ai = DurakAI()
+        var driver = GameDriver(game, seatCount: players, seed: 0xBEEF &+ UInt64(players))
+        var moves = 0
+        while driver.outcome == nil, moves < 200_000 {
+            let seat = driver.state.core.currentSeat
+            guard let move = ai.move(for: seat, in: driver.state, game: game) else { break }
+            driver.apply(move)
+            #expect(total(driver.state) == 36)
+            moves += 1
+        }
+        #expect(driver.outcome != nil)
+        #expect(total(driver.state) == 36)
+    }
+
+    @Test("Round-robin throw-in priority also terminates (4 players)")
+    func roundRobinPlaythrough() {
+        let game = DurakGame(rules: DurakRules(throwInPriority: .roundRobin))
+        let ai = DurakAI()
+        var driver = GameDriver(game, seatCount: 4, seed: 0xC0FFEE)
+        var moves = 0
+        while driver.outcome == nil, moves < 200_000 {
+            let seat = driver.state.core.currentSeat
+            guard let move = ai.move(for: seat, in: driver.state, game: game) else { break }
+            driver.apply(move)
+            #expect(total(driver.state) == 36)
+            moves += 1
+        }
+        #expect(driver.outcome != nil)
     }
 }

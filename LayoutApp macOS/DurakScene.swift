@@ -2,10 +2,11 @@
 //  DurakScene.swift
 //  LayoutApp macOS
 //
-//  Playable two-player Durak (you vs. a simple AI) driven by GameEngine's DurakGame. You pick the
-//  cards to play: click a hand card to attack, or to beat the current attack while defending; use
-//  the Take / Pass buttons otherwise. Hands and the table render through SKCollectionNode fans.
-//  The AI (seat 1) plays after a short "thinking" delay so its moves are watchable.
+//  Playable Durak (you vs. simple AIs) for 2–4 players, driven by GameEngine's DurakGame. You are
+//  seat 0 at the bottom; opponents fan out across the top. Click a hand card to attack or to beat
+//  the open attack; use Take / Pass(Done) otherwise. Live pills toggle player count and rules
+//  (throw-in, throw-on-take, and throw-in priority). All non-human seats are played by DurakAI with
+//  a short "thinking" delay, and `advance` resolves the throw-in cycle between moves.
 //
 
 import SpriteKit
@@ -14,14 +15,21 @@ import LayoutKit
 
 final class DurakScene: SKScene {
 
+    private var playerCount = 3
     private var rules = DurakRules()
     private var game = DurakGame()
     private var state: DurakState!
     private let ai = DurakAI()
     private var aiThinking = false
 
-    private let me = SeatID(0)        // human, bottom
-    private let opponent = SeatID(1)  // AI, top
+    // Match (series of rounds) state.
+    private var teachingDurak = false
+    private var lossLimit = 0            // 0 = unlimited; otherwise the match ends at this many losses
+    private var lossCounts: [SeatID: Int] = [:]
+    private var lastDurak: SeatID?
+    private var roundResolved = false
+
+    private let me = SeatID(0)
 
     private let tableNode = SKNode()
     private let controlsNode = SKNode()
@@ -29,6 +37,7 @@ final class DurakScene: SKScene {
     private let hintLabel = SKLabelNode()
 
     private func hand(_ seat: SeatID) -> ZoneID { ZoneID("hand", owner: seat) }
+    private func isAttacker(_ seat: SeatID) -> Bool { seat != state.defender }
 
     // MARK: - Lifecycle
 
@@ -42,7 +51,7 @@ final class DurakScene: SKScene {
         configure(hintLabel, size: 13, font: "AvenirNext-Regular", alpha: 0.7)
         addChild(statusLabel)
         addChild(hintLabel)
-        startNewGame()
+        startMatch()
     }
 
     override func didChangeSize(_ oldSize: CGSize) {
@@ -51,12 +60,40 @@ final class DurakScene: SKScene {
         render()
     }
 
-    private func startNewGame() {
+    private func startMatch() {
+        lossCounts = [:]
+        lastDurak = nil
+        startRound()
+    }
+
+    private func startRound() {
         game = DurakGame(rules: rules)
-        state = game.setup(seatCount: 2, seed: UInt64.random(in: UInt64.min...UInt64.max))
+        state = game.setup(seatCount: playerCount,
+                           seed: UInt64.random(in: UInt64.min...UInt64.max),
+                           openingAttacker: openingAttacker())
         aiThinking = false
+        roundResolved = false
+        settle()
         render()
-        scheduleAITurnIfNeeded() // opponent may be the first attacker
+        scheduleAIIfNeeded() // a non-human seat may be the first attacker
+    }
+
+    /// Who attacks first this round: lowest trump on round 1 (nil → engine decides), otherwise from
+    /// the previous loser and the "teaching the durak" rule.
+    private func openingAttacker() -> SeatID? {
+        guard let durak = lastDurak else { return nil }
+        let n = playerCount
+        return teachingDurak ? SeatID((durak.index - 1 + n) % n) // loser defends → seat to their right attacks
+                             : durak                              // loser attacks first
+    }
+
+    private var matchOver: Bool {
+        lossLimit > 0 && lossCounts.values.contains { $0 >= lossLimit }
+    }
+
+    private var matchLoser: SeatID? {
+        guard lossLimit > 0 else { return nil }
+        return (0..<playerCount).map { SeatID($0) }.first { (lossCounts[$0] ?? 0) >= lossLimit }
     }
 
     // MARK: - Input
@@ -64,16 +101,36 @@ final class DurakScene: SKScene {
     override func mouseDown(with event: NSEvent) {
         let hit = nodes(at: event.location(in: self))
 
-        // Rule toggles work at any time (they affect upcoming decisions, not the current state).
+        // Live controls work at any time.
+        if hit.contains(where: { $0.name == "ctrl_players" }) {
+            playerCount = playerCount >= 4 ? 2 : playerCount + 1; startMatch(); return
+        }
+        if hit.contains(where: { $0.name == "ctrl_teaching" }) {
+            teachingDurak.toggle(); render(); return
+        }
+        if hit.contains(where: { $0.name == "ctrl_loselimit" }) {
+            lossLimit = (lossLimit == 0) ? 1 : (lossLimit >= 5 ? 0 : lossLimit + 1) // 1…5 then unlimited
+            render(); return
+        }
         if hit.contains(where: { $0.name == "ctrl_throwin" }) {
             rules.allowThrowIn.toggle(); game = DurakGame(rules: rules); render(); return
         }
         if hit.contains(where: { $0.name == "ctrl_throwontake" }) {
             rules.throwInOnTake.toggle(); game = DurakGame(rules: rules); render(); return
         }
+        if hit.contains(where: { $0.name == "ctrl_priority" }) {
+            rules.throwInPriority = (rules.throwInPriority == .principalFirst) ? .roundRobin : .principalFirst
+            game = DurakGame(rules: rules); render(); return
+        }
+        if hit.contains(where: { $0.name == "ctrl_firstmax" }) {
+            rules.firstAttackMaxFive.toggle(); game = DurakGame(rules: rules); render(); return
+        }
 
-        if game.outcome(state) != nil { startNewGame(); return }
-        guard !aiThinking else { return }
+        if game.outcome(state) != nil {
+            if matchOver { startMatch() } else { startRound() }
+            return
+        }
+        guard !aiThinking, state.core.currentSeat == me else { return }
 
         if hit.contains(where: { $0.name == "btn_take" }) { humanMove(.take); return }
         if hit.contains(where: { $0.name == "btn_pass" }) { humanMove(.pass); return }
@@ -84,12 +141,10 @@ final class DurakScene: SKScene {
     }
 
     private func handleCardClick(_ card: CardID) {
-        guard state.core.currentSeat == me else { return }
         switch state.phase {
         case .attacking, .takingThrowIn:
             humanMove(.attack(card))
         case .defending:
-            // Beat the first unbeaten attack this card can legally beat.
             let legal = game.legalMoves(for: me, in: state)
             if let move = legal.first(where: {
                 if case let .defend(_, with) = $0 { return with == card } else { return false }
@@ -100,30 +155,33 @@ final class DurakScene: SKScene {
     }
 
     private func humanMove(_ move: DurakMove) {
-        guard !aiThinking, game.outcome(state) == nil, state.core.currentSeat == me else { return }
-        guard game.legalMoves(for: me, in: state).contains(move) else { return }
+        guard !aiThinking, game.outcome(state) == nil, state.core.currentSeat == me,
+              game.legalMoves(for: me, in: state).contains(move) else { return }
         fold(game.lower(move, in: state))
+        settle()
         render()
-        scheduleAITurnIfNeeded()
+        scheduleAIIfNeeded()
     }
 
-    // MARK: - AI
+    // MARK: - AI / engine stepping
 
-    private func scheduleAITurnIfNeeded() {
-        guard game.outcome(state) == nil, state.core.currentSeat == opponent else { return }
+    private func scheduleAIIfNeeded() {
+        guard game.outcome(state) == nil, state.core.currentSeat != me else { return }
         aiThinking = true
         render()
-        run(.sequence([.wait(forDuration: 0.6), .run { [weak self] in self?.aiStep() }]))
+        run(.sequence([.wait(forDuration: 0.55), .run { [weak self] in self?.aiStep() }]))
     }
 
     private func aiStep() {
-        guard let move = ai.move(for: opponent, in: state, game: game) else {
+        guard game.outcome(state) == nil, state.core.currentSeat != me else { aiThinking = false; render(); return }
+        guard let move = ai.move(for: state.core.currentSeat, in: state, game: game) else {
             aiThinking = false; render(); return
         }
         fold(game.lower(move, in: state))
-        if game.outcome(state) == nil, state.core.currentSeat == opponent {
+        settle()
+        if game.outcome(state) == nil, state.core.currentSeat != me {
             render()
-            run(.sequence([.wait(forDuration: 0.6), .run { [weak self] in self?.aiStep() }]))
+            run(.sequence([.wait(forDuration: 0.55), .run { [weak self] in self?.aiStep() }]))
         } else {
             aiThinking = false
             render()
@@ -139,74 +197,102 @@ final class DurakScene: SKScene {
         }
     }
 
+    /// Run the engine's automatic transitions (throw-in offers, auto-passes, bout resolution).
+    private func advanceToFixpoint() {
+        var guardCount = 0
+        while true {
+            let batch = game.advance(state)
+            if batch.isEmpty { break }
+            fold(batch)
+            guardCount += 1
+            if guardCount > 10_000 { break }
+        }
+    }
+
+    /// Advance to a fixpoint and, when a round ends, record the durak's loss (exactly once).
+    private func settle() {
+        advanceToFixpoint()
+        guard !roundResolved, let outcome = game.outcome(state) else { return }
+        roundResolved = true
+        if case let .winners(safe) = outcome,
+           let durak = (0..<playerCount).map({ SeatID($0) }).first(where: { !safe.contains($0) }) {
+            lastDurak = durak
+            lossCounts[durak, default: 0] += 1
+        }
+    }
+
     // MARK: - Rendering
 
     private func render() {
         tableNode.removeAllChildren()
         controlsNode.removeAllChildren()
 
-        drawHand(opponent, faceUp: false, rowY: size.height - 90)
+        drawOpponents()
         drawDeck()
         drawTable()
-        drawHand(me, faceUp: true, rowY: 112)
+        drawHand(me, faceUp: true, rowY: 140, cardHeight: 120)
         drawControls()
         drawRulePills()
 
-        statusLabel.position = CGPoint(x: size.width / 2, y: size.height - 28)
+        statusLabel.position = CGPoint(x: size.width / 2, y: 252)
         statusLabel.text = statusText()
-        hintLabel.position = CGPoint(x: size.width / 2, y: 196)
+        hintLabel.position = CGPoint(x: size.width / 2, y: 224)
         hintLabel.text = hintText()
     }
 
-    /// Live rule toggles (bottom of the screen) — flip throw-in rules mid-game for testing.
-    private func drawRulePills() {
-        let y: CGFloat = 26
-        controlsNode.addChild(rulePill("Throw-in: \(rules.allowThrowIn ? "On" : "Off")",
-                                       name: "ctrl_throwin", at: CGPoint(x: size.width / 2 - 115, y: y)))
-        controlsNode.addChild(rulePill("Throw on take: \(rules.throwInOnTake ? "On" : "Off")",
-                                       name: "ctrl_throwontake", at: CGPoint(x: size.width / 2 + 115, y: y)))
+    private func drawOpponents() {
+        let opponents = (1..<playerCount).map { SeatID($0) }
+        let topY = size.height - 92
+        for (i, seat) in opponents.enumerated() {
+            let x: CGFloat
+            if opponents.count == 1 {
+                x = size.width / 2
+            } else {
+                let left: CGFloat = 220, right = size.width - 220
+                x = left + (right - left) * CGFloat(i) / CGFloat(opponents.count - 1)
+            }
+            drawOpponent(seat, center: CGPoint(x: x, y: topY))
+        }
     }
 
-    private func rulePill(_ text: String, name: String, at point: CGPoint) -> SKNode {
-        let pill = SKShapeNode(rectOf: CGSize(width: 210, height: 28), cornerRadius: 14)
-        pill.fillColor = SKColor(white: 1.0, alpha: 0.12)
-        pill.strokeColor = SKColor(white: 1.0, alpha: 0.4)
-        pill.name = name
-        let label = SKLabelNode(text: text)
-        label.fontName = "AvenirNext-DemiBold"
-        label.fontSize = 13
-        label.fontColor = .white
-        label.verticalAlignmentMode = .center
-        label.horizontalAlignmentMode = .center
-        pill.addChild(label)
-        pill.position = point
-        return pill
+    private func drawOpponent(_ seat: SeatID, center: CGPoint) {
+        // A small face-down fan + a label with role/count, highlighted when it's this seat's turn.
+        let cardHeight: CGFloat = 66
+        let cardSize = CGSize(width: cardHeight * 0.72, height: cardHeight)
+        let count = state.core[hand(seat)]?.count ?? 0
+        let collection = SKCollectionNode(layoutBuilder: { node in
+            StackLayout(axis: .horizontal,
+                        itemSizing: RelativeSizing(widthSpec: .containerHeight(percentage: 0.72),
+                                                   heightSpec: .containerHeight(percentage: 1.0)),
+                        gapPercentage: 0.5, alignment: .center, zOrder: .ascending, dataSource: node)
+        })
+        collection.layoutFrame = CGRect(x: 0, y: 0, width: 220, height: cardHeight)
+        for _ in 0..<count { collection.addLayoutableChild(makeCardNode(face: nil, faceUp: false, size: cardSize)) }
+        collection.layoutIfNeeded()
+        collection.position = center
+        tableNode.addChild(collection)
+
+        let isTurn = (state.core.currentSeat == seat) && game.outcome(state) == nil
+        let role = seat == state.defender ? "Defender"
+                 : seat == state.principalAttacker ? "Lead attacker" : "Attacker"
+        let losses = lossCounts[seat] ?? 0
+        let lossText = losses > 0 ? "  ·  ✖\(losses)" : ""
+        let label = textLabel("Player \(seat.index)  ·  \(role)  ·  \(count)\(lossText)",
+                              x: center.x, y: center.y - cardHeight / 2 - 16, size: 13)
+        label.fontColor = isTurn ? .systemYellow : SKColor(white: 1.0, alpha: 0.85)
+        if isTurn { label.fontName = "AvenirNext-Bold" }
+        tableNode.addChild(label)
     }
 
-    private func drawHand(_ seat: SeatID, faceUp: Bool, rowY: CGFloat) {
+    private func drawHand(_ seat: SeatID, faceUp: Bool, rowY: CGFloat, cardHeight: CGFloat) {
         let cards = state.core[hand(seat)]?.cards ?? []
         guard !cards.isEmpty else { return }
-
-        // Cards keep a comfortable fixed size. StackLayout spreads them edge-to-edge when they fit,
-        // and automatically fans (overlaps) them when the hand is large — the top-left corner index
-        // keeps every card identifiable even when centres get covered.
-        let cardHeight: CGFloat = 120
         let cardSize = CGSize(width: cardHeight * 0.76, height: cardHeight)
-
         let collection = SKCollectionNode(layoutBuilder: { node in
-            StackLayout(
-                axis: .horizontal,
-                itemSizing: RelativeSizing(
-                    widthSpec: .containerHeight(percentage: 0.76),
-                    heightSpec: .containerHeight(percentage: 1.0)
-                ),
-                // 1.0 = step one full card width (touching, no overlap). When the cards don't fit the
-                // layoutFrame, StackLayout compresses the step automatically → an overlapping fan.
-                gapPercentage: 1.0,
-                alignment: .center,
-                zOrder: .ascending,
-                dataSource: node
-            )
+            StackLayout(axis: .horizontal,
+                        itemSizing: RelativeSizing(widthSpec: .containerHeight(percentage: 0.76),
+                                                   heightSpec: .containerHeight(percentage: 1.0)),
+                        gapPercentage: 1.0, alignment: .center, zOrder: .ascending, dataSource: node)
         })
         collection.layoutFrame = CGRect(x: 0, y: 0, width: size.width * 0.92, height: cardHeight)
         for card in cards {
@@ -244,8 +330,7 @@ final class DurakScene: SKScene {
         let deck = state.core[.deck]?.cards ?? []
         let deckX: CGFloat = 120
         let deckY = size.height / 2
-
-        if let trumpCard = deck.first { // bottom of the deck, turned up
+        if let trumpCard = deck.first {
             let trump = makeCardNode(face: state.registry.face(trumpCard), faceUp: true, size: CGSize(width: 80, height: 112))
             trump.layoutFrame = CGRect(x: 0, y: 0, width: 80, height: 112)
             trump.zRotation = .pi / 2
@@ -269,9 +354,27 @@ final class DurakScene: SKScene {
         if legal.contains(.take) {
             controlsNode.addChild(button("Take", name: "btn_take", at: point))
         } else if legal.contains(.pass) {
-            let title = state.phase == .takingThrowIn ? "Done" : "Pass / Bita"
-            controlsNode.addChild(button(title, name: "btn_pass", at: point))
+            controlsNode.addChild(button(state.phase == .takingThrowIn ? "Done" : "Pass / Bita", name: "btn_pass", at: point))
         }
+    }
+
+    private func drawRulePills() {
+        let cx = size.width / 2
+        // Bottom row: per-deal rules.
+        let rowA: CGFloat = 22
+        let xa: [CGFloat] = [cx - 258, cx - 86, cx + 86, cx + 258]
+        controlsNode.addChild(rulePill("Throw-in: \(rules.allowThrowIn ? "On" : "Off")", name: "ctrl_throwin", at: CGPoint(x: xa[0], y: rowA)))
+        controlsNode.addChild(rulePill("On take: \(rules.throwInOnTake ? "On" : "Off")", name: "ctrl_throwontake", at: CGPoint(x: xa[1], y: rowA)))
+        let order = rules.throwInPriority == .principalFirst ? "Principal" : "Round-robin"
+        controlsNode.addChild(rulePill("Priority: \(order)", name: "ctrl_priority", at: CGPoint(x: xa[2], y: rowA)))
+        controlsNode.addChild(rulePill("First ≤5: \(rules.firstAttackMaxFive ? "On" : "Off")", name: "ctrl_firstmax", at: CGPoint(x: xa[3], y: rowA)))
+
+        // Upper row: match settings.
+        let rowB: CGFloat = 54
+        let xb: [CGFloat] = [cx - 172, cx, cx + 172]
+        controlsNode.addChild(rulePill("Players: \(playerCount)", name: "ctrl_players", at: CGPoint(x: xb[0], y: rowB)))
+        controlsNode.addChild(rulePill("Teaching: \(teachingDurak ? "On" : "Off")", name: "ctrl_teaching", at: CGPoint(x: xb[1], y: rowB)))
+        controlsNode.addChild(rulePill("Lose at: \(lossLimit == 0 ? "∞" : String(lossLimit))", name: "ctrl_loselimit", at: CGPoint(x: xb[2], y: rowB)))
     }
 
     // MARK: - Nodes
@@ -297,7 +400,6 @@ final class DurakScene: SKScene {
         center.zPosition = 1
         node.addChild(center)
 
-        // Top-left corner index — stays visible when a large hand fans/overlaps the cards.
         let corner = SKLabelNode(text: face.description)
         corner.fontName = "Menlo-Bold"
         corner.fontSize = max(10, min(15, cardSize.width * 0.22))
@@ -315,15 +417,29 @@ final class DurakScene: SKScene {
         pill.fillColor = SKColor(white: 1.0, alpha: 0.16)
         pill.strokeColor = SKColor(white: 1.0, alpha: 0.5)
         pill.name = name
+        pill.addChild(centeredLabel(text, size: 15))
+        pill.position = point
+        return pill
+    }
+
+    private func rulePill(_ text: String, name: String, at point: CGPoint) -> SKNode {
+        let pill = SKShapeNode(rectOf: CGSize(width: 156, height: 28), cornerRadius: 14)
+        pill.fillColor = SKColor(white: 1.0, alpha: 0.12)
+        pill.strokeColor = SKColor(white: 1.0, alpha: 0.4)
+        pill.name = name
+        pill.addChild(centeredLabel(text, size: 11))
+        pill.position = point
+        return pill
+    }
+
+    private func centeredLabel(_ text: String, size: CGFloat) -> SKLabelNode {
         let label = SKLabelNode(text: text)
         label.fontName = "AvenirNext-DemiBold"
-        label.fontSize = 15
+        label.fontSize = size
         label.fontColor = .white
         label.verticalAlignmentMode = .center
         label.horizontalAlignmentMode = .center
-        pill.addChild(label)
-        pill.position = point
-        return pill
+        return label
     }
 
     private func configure(_ label: SKLabelNode, size: CGFloat, font: String, alpha: CGFloat = 1.0) {
@@ -348,22 +464,31 @@ final class DurakScene: SKScene {
     // MARK: - Status text
 
     private func statusText() -> String {
-        switch game.outcome(state) {
-        case .winner(let seat):
-            return seat == me ? "You win! Opponent is the durak 🎉  —  click to replay"
-                              : "You are the durak.  —  click to replay"
-        case .winners, .draw:
-            return "Draw.  —  click to replay"
-        case nil:
-            if aiThinking || state.core.currentSeat == opponent { return "Trump \(state.trump.symbol)   ·   Opponent is thinking…" }
-            let action: String
-            switch state.phase {
-            case .attacking: action = "attack"
-            case .defending: action = "defend, or Take"
-            case .takingThrowIn: action = "throw in more, or Done"
+        if game.outcome(state) != nil {
+            if matchOver, let loser = matchLoser {
+                let who = loser == me ? "You" : "Player \(loser.index)"
+                return "\(who) lost the match (\(lossLimit) losses)  —  click for a new match"
             }
-            return "Trump \(state.trump.symbol)   ·   Your turn — \(action)"
+            if let durak = lastDurak {
+                let who = durak == me ? "You are" : "Player \(durak.index) is"
+                return "\(who) the durak this round  —  click for the next round"
+            }
+            return "Round drawn  —  click for the next round"
         }
+        let trump = "Trump \(state.trump.symbol)"
+        if aiThinking || state.core.currentSeat != me {
+            return "\(trump)   ·   Player \(state.core.currentSeat.index) is thinking…"
+        }
+        let role = me == state.defender ? "you defend" : "you attack"
+        let action: String
+        switch state.phase {
+        case .attacking: action = "attack"
+        case .defending: action = "defend, or Take"
+        case .takingThrowIn: action = "throw in more, or Done"
+        }
+        let mine = lossCounts[me] ?? 0
+        let losses = mine > 0 ? "   ·   your losses: \(mine)" : ""
+        return "\(trump)   ·   \(role) — \(action)\(losses)"
     }
 
     private func hintText() -> String {
@@ -371,7 +496,7 @@ final class DurakScene: SKScene {
         guard state.core.currentSeat == me, !aiThinking else { return "" }
         switch state.phase {
         case .attacking: return "Click a card to attack"
-        case .defending: return "Click a card to beat the attack"
+        case .defending: return "Click a card to beat the attack, or Take"
         case .takingThrowIn: return "Throw in matching cards, or click Done"
         }
     }
