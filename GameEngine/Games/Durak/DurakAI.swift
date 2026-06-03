@@ -26,13 +26,30 @@ public struct DurakAI {
             return beatingMoves.min { $0.1 < $1.1 }?.0 ?? .take
 
         case .attacking:
-            guard state.table.isEmpty else { return .pass } // don't pile on during throw-in
-            let attacks = moves.compactMap { move -> (DurakMove, Int)? in
-                if case let .attack(card) = move { return (move, value(card, in: state)) }
-                return nil
+            if state.table.isEmpty {
+                let attacks = moves.compactMap { move -> (DurakMove, Int)? in
+                    if case let .attack(card) = move { return (move, value(card, in: state)) }
+                    return nil
+                }
+                return attacks.min { $0.1 < $1.1 }?.0 ?? moves.first
             }
-            return attacks.min { $0.1 < $1.1 }?.0 ?? moves.first
+            return throwInChoice(from: moves, in: state) // after a beat, maybe pile on
+
+        case .takingThrowIn:
+            return throwInChoice(from: moves, in: state) // defender is taking — pile on cheap cards
         }
+    }
+
+    /// Throw in the cheapest *non-trump* matching card; otherwise stop (never waste trumps on a throw-in).
+    private func throwInChoice(from moves: [DurakMove], in state: DurakState) -> DurakMove {
+        let attacks = moves.compactMap { move -> (DurakMove, StandardFace)? in
+            if case let .attack(card) = move { return (move, state.registry.face(card)) }
+            return nil
+        }
+        let cheapestNonTrump = attacks
+            .filter { $0.1.suit != state.trump }
+            .min { $0.1.rank.rawValue < $1.1.rank.rawValue }
+        return cheapestNonTrump?.0 ?? .pass
     }
 
     /// Cheapness metric: low ranks are cheap; trumps are expensive (kept for later).

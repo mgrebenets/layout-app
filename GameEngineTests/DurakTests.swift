@@ -19,6 +19,15 @@ struct DurakTests {
         state.core.zones.values.reduce(0) { $0 + $1.count }
     }
 
+    private func fold(_ effects: [Effect<DurakEffect>], into state: inout DurakState, with game: DurakGame) {
+        for effect in effects {
+            switch effect {
+            case let .core(coreEffect): state.core.apply(coreEffect)
+            case let .game(gameEffect): game.apply(gameEffect, to: &state)
+            }
+        }
+    }
+
     @Test("Beating rules: higher same-suit wins, trump beats non-trump")
     func beats() {
         let trump = Suit.spades
@@ -68,7 +77,7 @@ struct DurakTests {
 
     @Test("Taking scoops the table into the defender's hand and keeps the roles")
     func takePicksUp() {
-        var driver = GameDriver(DurakGame(), seatCount: 2, seed: 11)
+        var driver = GameDriver(DurakGame(rules: DurakRules(throwInOnTake: false)), seatCount: 2, seed: 11)
         let attacker = driver.state.attacker
         let defender = driver.state.defender
         let defenderHandBefore = driver.state.core[hand(defender)]?.count ?? 0
@@ -83,6 +92,48 @@ struct DurakTests {
         #expect((driver.state.core[hand(defender)]?.count ?? 0) >= defenderHandBefore)
         #expect(driver.state.attacker == attacker)   // roles unchanged after a take
         #expect(total(driver.state) == 36)
+    }
+
+    @Test("Throw-in-on-take lets the attacker pile matching cards before the defender scoops")
+    func throwInOnTake() {
+        // seat 0 attacks with a 7; it holds another 7 to throw in. seat 1 will take. Empty deck so
+        // no draw-ups muddy the counts.
+        let faces = [
+            StandardFace(.seven, .hearts),   // 0 — attacker opens with this
+            StandardFace(.seven, .clubs),    // 1 — attacker's matching throw-in
+            StandardFace(.king, .spades),    // 2 — attacker filler (won't match)
+            StandardFace(.six, .diamonds),   // 3 — defender
+            StandardFace(.eight, .diamonds), // 4 — defender
+            StandardFace(.nine, .diamonds),  // 5 — defender
+        ]
+        let registry = CardRegistry(faces)
+        var core = CoreState(seatCount: 2, rng: SeededRNG(seed: 0), currentSeat: s0)
+        core.apply(.createZone(.deck, .hidden))
+        core.apply(.createZone(.table, .public))
+        core.apply(.createZone(.discard, .hidden))
+        core.apply(.createZone(hand(s0), .ownerOnly))
+        core.apply(.createZone(hand(s1), .ownerOnly))
+        core.zones[hand(s0)]?.push(contentsOf: [CardID(0), CardID(1), CardID(2)])
+        core.zones[hand(s1)]?.push(contentsOf: [CardID(3), CardID(4), CardID(5)])
+        var state = DurakState(core: core, registry: registry, trump: .spades,
+                               attacker: s0, defender: s1, table: [], phase: .attacking)
+        let game = DurakGame(rules: DurakRules(throwInOnTake: true))
+
+        fold(game.lower(.attack(CardID(0)), in: state), into: &state, with: game) // attack 7♥
+        #expect(state.phase == .defending)
+
+        fold(game.lower(.take, in: state), into: &state, with: game)               // defender declares take
+        #expect(state.phase == .takingThrowIn)
+        #expect(state.core.currentSeat == s0)
+
+        let options = game.legalMoves(for: s0, in: state)
+        #expect(options.contains(.attack(CardID(1))))  // matching 7♣ can be thrown in
+        #expect(!options.contains(.attack(CardID(2))))  // the king doesn't match
+
+        fold(game.lower(.attack(CardID(1)), in: state), into: &state, with: game)  // throw in 7♣
+        fold(game.lower(.pass, in: state), into: &state, with: game)               // done → defender scoops
+        #expect(state.table.isEmpty)
+        #expect((state.core[hand(s1)]?.count ?? 0) == 5) // had 3, took both 7s
     }
 
     @Test("AI vs AI playthrough terminates with an outcome and conserves 36 cards")

@@ -14,6 +14,7 @@ import LayoutKit
 
 final class DurakScene: SKScene {
 
+    private var rules = DurakRules()
     private var game = DurakGame()
     private var state: DurakState!
     private let ai = DurakAI()
@@ -51,7 +52,7 @@ final class DurakScene: SKScene {
     }
 
     private func startNewGame() {
-        game = DurakGame()
+        game = DurakGame(rules: rules)
         state = game.setup(seatCount: 2, seed: UInt64.random(in: UInt64.min...UInt64.max))
         aiThinking = false
         render()
@@ -61,10 +62,19 @@ final class DurakScene: SKScene {
     // MARK: - Input
 
     override func mouseDown(with event: NSEvent) {
+        let hit = nodes(at: event.location(in: self))
+
+        // Rule toggles work at any time (they affect upcoming decisions, not the current state).
+        if hit.contains(where: { $0.name == "ctrl_throwin" }) {
+            rules.allowThrowIn.toggle(); game = DurakGame(rules: rules); render(); return
+        }
+        if hit.contains(where: { $0.name == "ctrl_throwontake" }) {
+            rules.throwInOnTake.toggle(); game = DurakGame(rules: rules); render(); return
+        }
+
         if game.outcome(state) != nil { startNewGame(); return }
         guard !aiThinking else { return }
 
-        let hit = nodes(at: event.location(in: self))
         if hit.contains(where: { $0.name == "btn_take" }) { humanMove(.take); return }
         if hit.contains(where: { $0.name == "btn_pass" }) { humanMove(.pass); return }
         if let cardNode = hit.first(where: { ($0.name ?? "").hasPrefix("card_") }),
@@ -76,7 +86,7 @@ final class DurakScene: SKScene {
     private func handleCardClick(_ card: CardID) {
         guard state.core.currentSeat == me else { return }
         switch state.phase {
-        case .attacking:
+        case .attacking, .takingThrowIn:
             humanMove(.attack(card))
         case .defending:
             // Beat the first unbeaten attack this card can legally beat.
@@ -138,13 +148,39 @@ final class DurakScene: SKScene {
         drawHand(opponent, faceUp: false, rowY: size.height - 90)
         drawDeck()
         drawTable()
-        drawHand(me, faceUp: true, rowY: 90)
+        drawHand(me, faceUp: true, rowY: 112)
         drawControls()
+        drawRulePills()
 
         statusLabel.position = CGPoint(x: size.width / 2, y: size.height - 28)
         statusLabel.text = statusText()
-        hintLabel.position = CGPoint(x: size.width / 2, y: 168)
+        hintLabel.position = CGPoint(x: size.width / 2, y: 196)
         hintLabel.text = hintText()
+    }
+
+    /// Live rule toggles (bottom of the screen) — flip throw-in rules mid-game for testing.
+    private func drawRulePills() {
+        let y: CGFloat = 26
+        controlsNode.addChild(rulePill("Throw-in: \(rules.allowThrowIn ? "On" : "Off")",
+                                       name: "ctrl_throwin", at: CGPoint(x: size.width / 2 - 115, y: y)))
+        controlsNode.addChild(rulePill("Throw on take: \(rules.throwInOnTake ? "On" : "Off")",
+                                       name: "ctrl_throwontake", at: CGPoint(x: size.width / 2 + 115, y: y)))
+    }
+
+    private func rulePill(_ text: String, name: String, at point: CGPoint) -> SKNode {
+        let pill = SKShapeNode(rectOf: CGSize(width: 210, height: 28), cornerRadius: 14)
+        pill.fillColor = SKColor(white: 1.0, alpha: 0.12)
+        pill.strokeColor = SKColor(white: 1.0, alpha: 0.4)
+        pill.name = name
+        let label = SKLabelNode(text: text)
+        label.fontName = "AvenirNext-DemiBold"
+        label.fontSize = 13
+        label.fontColor = .white
+        label.verticalAlignmentMode = .center
+        label.horizontalAlignmentMode = .center
+        pill.addChild(label)
+        pill.position = point
+        return pill
     }
 
     private func drawHand(_ seat: SeatID, faceUp: Bool, rowY: CGFloat) {
@@ -233,7 +269,8 @@ final class DurakScene: SKScene {
         if legal.contains(.take) {
             controlsNode.addChild(button("Take", name: "btn_take", at: point))
         } else if legal.contains(.pass) {
-            controlsNode.addChild(button("Pass / Bita", name: "btn_pass", at: point))
+            let title = state.phase == .takingThrowIn ? "Done" : "Pass / Bita"
+            controlsNode.addChild(button(title, name: "btn_pass", at: point))
         }
     }
 
@@ -319,7 +356,12 @@ final class DurakScene: SKScene {
             return "Draw.  —  click to replay"
         case nil:
             if aiThinking || state.core.currentSeat == opponent { return "Trump \(state.trump.symbol)   ·   Opponent is thinking…" }
-            let action = state.phase == .attacking ? "attack" : "defend, or Take"
+            let action: String
+            switch state.phase {
+            case .attacking: action = "attack"
+            case .defending: action = "defend, or Take"
+            case .takingThrowIn: action = "throw in more, or Done"
+            }
             return "Trump \(state.trump.symbol)   ·   Your turn — \(action)"
         }
     }
@@ -327,6 +369,10 @@ final class DurakScene: SKScene {
     private func hintText() -> String {
         if game.outcome(state) != nil { return "" }
         guard state.core.currentSeat == me, !aiThinking else { return "" }
-        return state.phase == .attacking ? "Click a card to attack" : "Click a card to beat the attack"
+        switch state.phase {
+        case .attacking: return "Click a card to attack"
+        case .defending: return "Click a card to beat the attack"
+        case .takingThrowIn: return "Throw in matching cards, or click Done"
+        }
     }
 }

@@ -27,8 +27,9 @@ public struct TablePair: Sendable, Equatable {
 }
 
 public enum DurakPhase: Sendable, Equatable {
-    case attacking   // waiting for the attacker (play a card, or pass once everything is beaten)
-    case defending   // waiting for the defender (beat an attack, or take)
+    case attacking      // waiting for the attacker (play a card, or pass once everything is beaten)
+    case defending      // waiting for the defender (beat an attack, or take)
+    case takingThrowIn  // defender has committed to taking; attacker may pile on more, then "done"
 }
 
 public enum DurakEffect: GameEffect {
@@ -77,6 +78,23 @@ public struct DurakGame: Game {
 
     private func tableCards(_ state: DurakState) -> [CardID] {
         state.table.flatMap { [$0.attack] + ($0.defense.map { [$0] } ?? []) }
+    }
+
+    /// Most attack cards allowed this bout: the defender's room (cards still in hand plus the ones
+    /// already used to defend = their starting hand), capped at the hand size (6).
+    private func attackLimit(_ state: DurakState) -> Int {
+        let defended = state.table.filter { $0.defense != nil }.count
+        let defenderHand = state.core[hand(state.defender)]?.count ?? 0
+        return min(rules.handSize, defenderHand + defended)
+    }
+
+    /// Throw-in attacks available to `seat`: cards whose rank is already on the table, while there's
+    /// still room for another attack.
+    private func throwInAttacks(for seat: SeatID, in state: DurakState) -> [DurakMove] {
+        guard rules.allowThrowIn, state.table.count < attackLimit(state) else { return [] }
+        let ranks = Set(tableCards(state).map { state.registry.face($0).rank })
+        let hand = state.core[hand(seat)]?.cards ?? []
+        return hand.filter { ranks.contains(state.registry.face($0).rank) }.map { .attack($0) }
     }
 
     // MARK: - Setup
@@ -136,15 +154,7 @@ public struct DurakGame: Game {
                 return handCards.map { .attack($0) } // opening attack: any card
             }
             guard state.table.allSatisfy({ $0.defense != nil }) else { return [] }
-            var moves: [DurakMove] = [.pass]
-            if rules.allowThrowIn {
-                let defenderHand = state.core[hand(state.defender)]?.count ?? 0
-                if state.table.count < rules.handSize, defenderHand > 0 {
-                    let ranks = Set(tableCards(state).map { state.registry.face($0).rank })
-                    moves += handCards.filter { ranks.contains(state.registry.face($0).rank) }.map { .attack($0) }
-                }
-            }
-            return moves
+            return [.pass] + throwInAttacks(for: seat, in: state)
 
         case .defending:
             guard seat == state.defender else { return [] }
@@ -156,6 +166,10 @@ public struct DurakGame: Game {
                 }
             }
             return moves
+
+        case .takingThrowIn:
+            guard seat == state.attacker else { return [] }
+            return [.pass] + throwInAttacks(for: seat, in: state) // .pass == "done", defender scoops
         }
     }
 
@@ -164,13 +178,18 @@ public struct DurakGame: Game {
     public func lower(_ move: DurakMove, in state: DurakState) -> [Effect<DurakEffect>] {
         switch move {
         case let .attack(card):
-            return [
+            var effects: [Effect<DurakEffect>] = [
                 .core(.move(card, from: hand(state.attacker), to: .table)),
                 .core(.setFaceUp(card, true)),
                 .game(.beginAttack(card)),
-                .game(.setPhase(.defending)),
-                .core(.setTurn(state.defender)),
             ]
+            if state.phase == .takingThrowIn {
+                effects.append(.core(.setTurn(state.attacker))) // defender is taking; keep piling on
+            } else {
+                effects.append(.game(.setPhase(.defending)))
+                effects.append(.core(.setTurn(state.defender)))
+            }
+            return effects
 
         case let .defend(attack, with):
             return [
@@ -182,16 +201,18 @@ public struct DurakGame: Game {
             ]
 
         case .take:
-            var effects: [Effect<DurakEffect>] = []
-            for card in tableCards(state) {
-                effects.append(.core(.move(card, from: .table, to: hand(state.defender))))
-                effects.append(.core(.setFaceUp(card, false)))
+            // If allowed and the attacker still has room+matching cards, pause to let them pile on.
+            if rules.throwInOnTake, !throwInAttacks(for: state.attacker, in: state).isEmpty {
+                return [.game(.setPhase(.takingThrowIn)), .core(.setTurn(state.attacker))]
             }
-            effects.append(.game(.clearTable))
-            effects += endBout(state, defenderTook: true)
-            return effects
+            return scoopToDefender(state) + [.game(.clearTable)] + endBout(state, defenderTook: true)
 
         case .pass:
+            if state.phase == .takingThrowIn {
+                // Attacker is done throwing in — defender scoops everything.
+                return scoopToDefender(state) + [.game(.clearTable)] + endBout(state, defenderTook: true)
+            }
+            // Bita: a fully-beaten table is discarded.
             var effects: [Effect<DurakEffect>] = []
             for card in tableCards(state) {
                 effects.append(.core(.move(card, from: .table, to: .discard)))
@@ -201,6 +222,15 @@ public struct DurakGame: Game {
             effects += endBout(state, defenderTook: false)
             return effects
         }
+    }
+
+    private func scoopToDefender(_ state: DurakState) -> [Effect<DurakEffect>] {
+        var effects: [Effect<DurakEffect>] = []
+        for card in tableCards(state) {
+            effects.append(.core(.move(card, from: .table, to: hand(state.defender))))
+            effects.append(.core(.setFaceUp(card, false)))
+        }
+        return effects
     }
 
     /// Refill hands (attacker first) and set up the next bout's roles.
