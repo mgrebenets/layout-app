@@ -21,4 +21,5 @@ public enum ScenarioType: CaseIterable {
     case circularAndStack  // Focus on Circular and Stack layouts
     case dragAndDrop       // Interaction test with NodeCoordinator
     case war               // Playable War card game on the GameEngine
+    case durak             // Playable Durak card game on the GameEngine
 }

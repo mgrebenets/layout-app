@@ -290,6 +290,14 @@ engine, the design holds. Wherever a game has to fight the protocol, that's a de
    pile renders through an **`SKCollectionNode`** horizontal `StackLayout` so war cards fan out.
    New universal effects added for this: `moveToBottom` and `shuffle` (§4.1).
 5. **Hearts, Durak, Uno, Go Fish, Poker** — one per family (the acceptance set). *Parallelizable.*
+   - **Durak** ✅ — two-player podkidnoy. First game with **player decisions** and **game-specific
+     effects** (`DurakEffect`: roles, trump, table pairs) folded via the `.game(...)` arm; card moves
+     stay universal. Dynamic attacker/defender roles + trump beating rules + take/pass/draw-up.
+     Engine + `DurakAI` + tests (incl. an AI-vs-AI playthrough that terminates conserving 36 cards).
+     **Playable in-app**: `Durak` scenario → `DurakScene` — click a hand card to attack or to beat
+     the current attack, Take/Pass buttons, AI opponent with thinking delays; hands/table render via
+     `SKCollectionNode` fans. Validates `TurnOrder`-style roles living in game state for now (a shared
+     `TurnOrder` component can be extracted once a second role-based game needs it).
 6. **Reusable family components** — poker hand evaluator, meld validator, betting/pot module, score tables.
 7. **Stretch games** — Canasta, Preference/1000, Bura (port from reloaded).
 8. **Cross-cutting** — undo/redo (truncate-and-refold), persistence (Codable effect log), networking

@@ -5,7 +5,8 @@ import LayoutKit
 struct LandingPageView: View {
     let scenarios = [
         Scenario(title: "Overview", description: "Full layout system demonstration", type: .overview),
-        Scenario(title: "War", description: "Play the War card game end-to-end on the GameEngine", type: .war)
+        Scenario(title: "War", description: "Play the War card game end-to-end on the GameEngine", type: .war),
+        Scenario(title: "Durak", description: "Play Durak vs. a simple AI — pick your cards to attack and defend", type: .durak)
     ]
 
     var body: some View {
@@ -36,6 +37,8 @@ struct ScenarioDetailView: View {
         switch scenario.type {
         case .war:
             return WarScene(size: CGSize(width: 1024, height: 768))
+        case .durak:
+            return DurakScene(size: CGSize(width: 1024, height: 768))
         default:
             return LayoutScenarioScene.create(for: scenario, contextMenuState: contextMenuState)
         }
