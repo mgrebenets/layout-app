@@ -182,6 +182,57 @@ struct DurakTests {
         #expect(game.legalMoves(for: s0, in: build(firstBout: false)).contains(.attack(CardID(10))))
     }
 
+    @Test("A match runs rounds until a player reaches the loss limit")
+    func matchReachesLossLimit() {
+        var match = DurakMatch(playerCount: 3, lossLimit: 2, teachingDurak: true)
+        let ai = DurakAI()
+        var seed: UInt64 = 0xA17C
+        var rounds = 0
+        while !match.isOver, rounds < 300 {
+            var state = match.newRound(seed: seed)
+            seed &+= 1
+            var moves = 0
+            while match.game.outcome(state) == nil, moves < 200_000 {
+                let seat = state.core.currentSeat
+                guard let move = ai.move(for: seat, in: state, game: match.game) else { break }
+                play(move, &state, match.game)
+                moves += 1
+            }
+            match.recordRound(state)
+            rounds += 1
+        }
+        #expect(match.isOver)
+        #expect(match.loser != nil)
+        if let loser = match.loser { #expect(match.losses(for: loser) >= 2) }
+    }
+
+    @Test("Teaching-the-durak aims the next round's first attack at the previous loser")
+    func teachingFirstMover() {
+        var match = DurakMatch(playerCount: 3, teachingDurak: true)
+        // Simulate that seat 2 was the durak last round.
+        let state = match.newRound(seed: 1)
+        match.recordRound(makeTerminalState(durak: SeatID(2), playerCount: 3))
+        // Teaching on → loser (seat 2) defends, so the seat to their right (seat 1) attacks.
+        #expect(match.openingAttacker() == SeatID(1))
+        match.teachingDurak = false
+        #expect(match.openingAttacker() == SeatID(2)) // loser attacks first
+        _ = state
+    }
+
+    /// A minimal terminal DurakState where `durak` is the only seat still holding a card.
+    private func makeTerminalState(durak: SeatID, playerCount: Int) -> DurakState {
+        let registry = CardRegistry([StandardFace(.six, .clubs)])
+        var core = CoreState(seatCount: playerCount, rng: SeededRNG(seed: 0), currentSeat: durak)
+        core.apply(.createZone(.deck, .hidden))
+        core.apply(.createZone(.table, .public))
+        core.apply(.createZone(.discard, .hidden))
+        for seat in 0..<playerCount { core.apply(.createZone(ZoneID("hand", owner: SeatID(seat)), .ownerOnly)) }
+        core.zones[ZoneID("hand", owner: durak)]?.push(CardID(0))
+        return DurakState(core: core, registry: registry, trump: .clubs,
+                          principalAttacker: durak, defender: SeatID((durak.index + 1) % playerCount),
+                          table: [], phase: .attacking, passed: [], out: [], firstBout: false)
+    }
+
     @Test("AI vs AI playthrough terminates with an outcome and conserves 36 cards")
     func aiPlaythrough() {
         let game = DurakGame()
