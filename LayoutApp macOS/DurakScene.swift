@@ -20,6 +20,7 @@ final class DurakScene: SKScene {
     private var roundResolved = false
     private var busy = false                     // true while an animation is playing
     private var lastPlacements: [Int: CardPlacement] = [:]
+    private var selectedCard: CardID?            // the human's lifted candidate, awaiting commit
 
     private let me = SeatID(0)
     private let tableCardSize = CGSize(width: 80, height: 112)
@@ -72,13 +73,16 @@ final class DurakScene: SKScene {
     private func startRound() {
         state = match.newRound(seed: UInt64.random(in: UInt64.min...UInt64.max))
         roundResolved = false
+        selectedCard = nil
         cardTable.reset()
         lastPlacements = placements(for: state)
         busy = true
         renderStaticUI()
         cardTable.apply(lastPlacements, duration: 0.3) { [weak self] in
-            self?.busy = false
-            self?.scheduleAIIfNeeded()
+            guard let self else { return }
+            self.busy = false
+            self.refreshInputLayer()
+            self.scheduleAIIfNeeded()
         }
     }
 
@@ -86,6 +90,7 @@ final class DurakScene: SKScene {
 
     private func perform(_ move: DurakMove) {
         busy = true
+        selectedCard = nil
         var snapshots: [DurakState] = []
         var s = state!
         foldInto(&s, game.lower(move, in: s))
@@ -122,7 +127,16 @@ final class DurakScene: SKScene {
             match.recordRound(state)
         }
         renderStaticUI()
+        refreshInputLayer()
         scheduleAIIfNeeded()
+    }
+
+    /// Re-apply the settled layout so legal-move highlights and the lifted candidate appear (a no-op
+    /// during animations and on non-human turns — `placements(for:)` only decorates then).
+    private func refreshInputLayer() {
+        guard state != nil, !busy else { return }
+        lastPlacements = placements(for: state)
+        cardTable.apply(lastPlacements, duration: 0.12) {}
     }
 
     private func scheduleAIIfNeeded() {
@@ -178,7 +192,13 @@ final class DurakScene: SKScene {
         guard state.core.currentSeat == me else { return }
         if hit.contains(where: { $0.name == "btn_take" }) { humanMove(.take); return }
         if hit.contains(where: { $0.name == "btn_pass" }) { humanMove(.pass); return }
-        if let card = cardID(at: hit) { handleCardClick(card) }
+        if hit.contains(where: { $0.name == "btn_play" }) { commitSelected(); return }
+        if let card = cardID(at: hit) {
+            handleCardClick(card)
+        } else if selectedCard != nil {
+            selectedCard = nil            // clicked empty space — cancel the candidate
+            refreshInputLayer()
+        }
     }
 
     private func cardID(at hits: [SKNode]) -> CardID? {
@@ -194,7 +214,21 @@ final class DurakScene: SKScene {
         return nil
     }
 
+    /// First click on a legal card lifts it as a candidate; clicking it again (or Play) commits.
+    /// Clicking another legal card switches the candidate. Illegal cards are ignored.
     private func handleCardClick(_ card: CardID) {
+        guard legalHandCardValues(in: state).contains(card.value) else { return }
+        if selectedCard == card {
+            commitSelected()
+        } else {
+            selectedCard = card
+            refreshInputLayer()
+        }
+    }
+
+    /// Play the lifted candidate: attack with it, or beat the first attack it can in defence.
+    private func commitSelected() {
+        guard let card = selectedCard else { return }
         switch state.phase {
         case .attacking, .takingThrowIn:
             humanMove(.attack(card))
@@ -206,6 +240,19 @@ final class DurakScene: SKScene {
                 humanMove(move)
             }
         }
+    }
+
+    /// The values of the human's hand cards that begin a legal move right now (for highlighting).
+    private func legalHandCardValues(in s: DurakState) -> Set<Int> {
+        var result: Set<Int> = []
+        for move in game.legalMoves(for: me, in: s) {
+            switch move {
+            case let .attack(card): result.insert(card.value)
+            case let .defend(_, with): result.insert(with.value)
+            case .take, .pass: break
+            }
+        }
+        return result
     }
 
     private func humanMove(_ move: DurakMove) {
@@ -257,7 +304,20 @@ final class DurakScene: SKScene {
             placeHand(s, seat: seat, faceUp: false, centerX: slot.x, rowY: slot.y, cardHeight: 66,
                       maxWidth: 220, baseZ: 4000 + CGFloat(i) * 200, into: &p)
         }
+        decorateForInput(&p, s)
         return p
+    }
+
+    /// When it's the human's settled turn, outline the cards they may play and lift their candidate.
+    /// Gated on `!busy` so animation snapshots and AI turns stay undecorated.
+    private func decorateForInput(_ p: inout [Int: CardPlacement], _ s: DurakState) {
+        guard !busy, s.core.currentSeat == me, game.outcome(s) == nil else { return }
+        for value in legalHandCardValues(in: s) {
+            p[value]?.highlighted = true
+        }
+        if let selected = selectedCard {
+            p[selected.value]?.selected = true
+        }
     }
 
     private func placeHand(_ s: DurakState, seat: SeatID, faceUp: Bool, centerX: CGFloat, rowY: CGFloat,
@@ -324,6 +384,9 @@ final class DurakScene: SKScene {
             controlsNode.addChild(button("Take", name: "btn_take", at: point))
         } else if legal.contains(.pass) {
             controlsNode.addChild(button(state.phase == .takingThrowIn ? "Done" : "Pass / Bita", name: "btn_pass", at: point))
+        }
+        if selectedCard != nil {
+            controlsNode.addChild(button("Play", name: "btn_play", at: CGPoint(x: point.x, y: point.y - 52)))
         }
     }
 
@@ -424,6 +487,7 @@ final class DurakScene: SKScene {
     private func hintText() -> String {
         if game.outcome(state) != nil { return "" }
         guard state.core.currentSeat == me, !busy else { return "" }
+        if selectedCard != nil { return "Click the card again or Play to confirm  ·  click elsewhere to cancel" }
         switch state.phase {
         case .attacking: return "Click a card to attack"
         case .defending: return "Click a card to beat the attack, or Take"

@@ -22,4 +22,6 @@ public enum ScenarioType: CaseIterable {
     case dragAndDrop       // Interaction test with NodeCoordinator
     case war               // Playable War card game on the GameEngine
     case durak             // Playable Durak card game on the GameEngine
+    case bura              // Playable Bura card game on the GameEngine
+    case solitaire         // Playable Klondike solitaire on the GameEngine
 }

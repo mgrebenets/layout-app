@@ -300,11 +300,95 @@ engine, the design holds. Wherever a game has to fight the protocol, that's a de
      loser + **teaching-the-durak**), per-player loss tally, and loss-limit (1–5 or unlimited). Engine +
      `DurakAI` + tests: AI playthroughs 2–6 players + round-robin (terminate, conserve 36), throw-in-on-take,
      first-bout cap, and a headless match-to-loss-limit. **Playable in-app**: `DurakScene` (up to 4) —
-     click to attack/defend, Take/Pass(Done), AI opponents with role badges + loss tallies, two rows of
-     live rule/match pills; hands/table render via `SKCollectionNode` fans. Roles still live in game
+     AI opponents with role badges + loss tallies, two rows of live rule/match pills.
+     - **Rendering (Stage A)** ✅ — a reusable, game-agnostic **card library in LayoutKit**: durable
+       `CardNode` (one per card ID — body + centre/corner pips, with a bottom-right upside-down pip)
+       and `CardTableNode`, which animates every card to a target `CardPlacement` (move/rotate/flip),
+       so deals/attacks/defends/sweeps are watchable; input is locked until the beat settles. Layering
+       uses a per-node z **band** (SpriteKit z is additive down the hierarchy, so children keep *small*
+       offsets) — guarded by a pixel `CardOcclusionTests` (a front card must hide the back card's pips).
+     - **Input UX (Stage B1)** ✅ — **click-to-select with legal-move highlighting**: legal cards are
+       outlined teal (`legalMoves`), clicking one **lifts** it (yellow outline) as a candidate, and a
+       second click or a **Play** button commits — clicking elsewhere cancels. Selection/highlight live
+       on `CardPlacement`/`CardNode` (`setHighlighted`/`setSelected`), pixel-tested by `CardDecorationTests`.
+       **Revisit (feedback):** drop the standing legal-move highlight (too much hand-holding for players who
+       know the rules); single-card play should be **one gesture** (double-click or drag), not pick-then-confirm;
+       reserve click-to-pop selection for **multi-card** attacks (B2). Drive any highlight only reactively (e.g. drop
+       targets while dragging). Not yet actioned — revisit before further input work.
+       Next: **B2** multi-select → atomic same-rank attacks (needs an `attack([CardID])` engine move);
+       **B3** drag-and-drop with highlighted drop targets (lean on `NodeCoordinator`).
+     Roles still live in game
      state (a shared `TurnOrder` component can be extracted once a second role-based game needs it).
 6. **Reusable family components** — poker hand evaluator, meld validator, betting/pot module, score tables.
 7. **Stretch games** — Canasta, Preference/1000, Bura (port from reloaded).
+   - **Bura** ✅ — 2-player trump trick-taking on `stripped36`, the engine's **first point-scoring game**
+     and first **multi-card move**: the leader plays **1–3 same-suit cards** (`lead([CardID])`), the
+     responder must **beat every one** (perfect matching via `beatsAll`) or surrenders the same count
+     (`respond([CardID])`). Rank strength is the **Ace-Ten order** — 6 7 8 9 J Q K **10 A** (the Ten sits
+     just below the Ace, above the King). `lower` places the cards; `advance` resolves the completed trick
+     — sweep to the winner's hidden won pile, `addScore` the captured points, hand them the lead — then
+     refills **one card at a time, alternating** (winner first, then clockwise) so the two hands stay equal
+     as the deck runs out (only the last card — the face-up trump at the bottom — can leave a one-card gap).
+     - **Scoring (configurable via `BuraRules`)**: counting is **full** (A=11, 10=10, K=4, Q=3, J=2; 120
+       total) or **clear** (aces & tens only, 10 each; 80 total). `winningScore` is optional — `nil` plays
+       the deal out and the **higher final score wins** (default); a value (e.g. 31) ends the deal the
+       instant it's reached. Surrendered cards may be dropped **face down** (`faceDownSurrender`) so the
+       points conceded stay hidden.
+     - **Combos (lead-first, configurable via `comboLeadsFirst`, on by default):** a hand of **three of one
+       suit** — trumps ("**бура**") or non-trumps ("**молодка**"/"письмо") — or **three aces incl. the trump
+       ace** takes the **opening lead** (applied in `setup`). None is an auto-win — three *low* trumps led
+       can still be beaten by three higher trumps; the win is then just the points. **Mid-game, бура lets
+       the non-leader claim the lead out of turn**: at a trick boundary a `.buraOffer` phase offers the
+       three-trump holder a `claimBura` / `declineBura` choice (a "Lead bura" / "Pass" button), with
+       attacker-first priority (the leader holding bura keeps it). молодка stays opening-only.
+       `isLeadCombo` / `beatAssignment` are public for the UI and tests.
+       - **Terminal handling:** the deal ends when the deck is dry and, at a trick boundary, a hand is
+         empty (uneven hands from multi-card leads no longer deadlock); leftover cards aren't scored.
+     - Engine + `BuraAI` + 18 tests (setup/120-point invariant, Ace-Ten beat rule, single- & multi-card
+       beat-vs-surrender, winner-first refill, equal-hands refill when the deck runs low, threshold win,
+       play-to-end win, clear counting, face-down surrender visibility, lead combos (incl. bura),
+       three-low-trumps-is-not-a-win, mid-game bura claim/decline, attacker-keeps-lead, beat-assignment
+       pairing, and a multi-seed AI playthrough conserving 36 cards with scores == captured).
+     **Validated:** the engine spans beyond elimination games — scoring and list-valued moves work with
+     no core changes. **Playable in-app**: `BuraScene` reuses the LayoutKit card library with Stage-A
+     animation (lead → answer → sweep-to-won-pile → refill). Input applies the [[durak-input-ux-direction]]
+     feedback — **no standing highlight**: single click *pops* a card into a pending set, **double-click
+     plays a single card outright**, and a context button (Lead / Beat / Give, shown only when the popped
+     set is a legal move) commits a multi-card play. The trick renders **Durak-style**: each answer
+     **overlaps the card it beats** (on top), while a surrender **tucks under** the lead (face down if
+     `faceDownSurrender`). **A click-to-continue pause** holds the opponent's
+     answer on the table so you can see what was beaten or dropped before it sweeps. Live rule pills:
+     win-at (end/31/41), count (full/clear), snos (open/closed face-down surrender), multi-lead on/off.
+     - **Variants backlog** (from the canonical RU rules — capture-for-later, not yet built):
+       *по рангам* (lead 2–3 of the same **rank**, not
+       only same suit); *с перебором* (must land 31–50, bust over 50); *без козырей* (no trump); *открытая*
+       (one/both hands open, with compensation points); *с пересдачея* (redeal if dealt a combo); *с даве*
+       ("dave" — double-or-concede); penalties (false win declaration / out-of-turn or extra draw = loss);
+       a 12-"ball" **match** scoring variant; 3-closed-vs-4-open hands. Three-of-a-kind sixes: not in this
+       source — confirm with the user. Buркозел is a separate game.
+     - **Match / loss-points layer** (user-requested, like `DurakMatch`): a match runs to a target of
+       **loss points** (an even number — 6, 12, …); the deal loser accrues loss points scaled by how badly
+       they lost — **2** for a normal loss, **4** if they finished under the "safe" score (**30** with 2
+       players, **20** with 3+), and **6** for **0 takes** (won no tricks). First to the target loses.
+   - **Solitaire (Klondike)** ✅ — the engine's **first single-player, non-trick game** (validates the zone
+     model on a new shape). Stock (`.deck`) + waste, four **foundations** (build up A→K by suit, ace low),
+     seven **tableau** piles (build down K→A in alternating colour; tableau zones are `.hidden` with the
+     `faceUp` set revealing exposed cards). One game-specific field — a **redeal counter** — folded by
+     `SolitaireEffect.usedRedeal`; everything else is CoreState. Moves: `draw` (turn `drawCount` to the
+     waste, or **recycle** the waste when the stock is dry, capped by `redealLimit`) and `move(CardID, to:)`
+     — the engine finds the source zone and, for a tableau→tableau move, **carries the whole face-up run**
+     on top of the card (the face-up portion is always a valid descending-alternating run). `advance` does
+     the one automatic step: flip a newly-exposed tableau top face-up. `outcome` wins when all four
+     foundations hold 52 cards. Default **turn-three, unlimited redeals** (`SolitaireRules`). Engine + 10
+     tests (deal shape, foundation build-up, tableau build-down + king-to-empty, run-carry move,
+     exposed-card flip, draw-three + recycle, redeal-limit gating, win, and a greedy auto-player that
+     terminates conserving 52 cards). **Playable in-app**: `SolitaireScene` — **drag** a card/run onto a
+     foundation or tableau, **click** a card to send it straight to its foundation, **click the stock** to
+     deal or recycle; faint slot outlines mark empty piles, rule pills toggle draw 1/3 and the redeal cap.
+     (Drag lifts the durable `CardNode`s via a new `CardTableNode.node(_:)` accessor; a drop validates
+     against `legalMoves` and snaps back if illegal.) *Backlog:* limited-redeal default for casino
+     draw-three, a solver/hints, auto-complete, scoring (standard/Vegas), other solitaires (FreeCell,
+     Spider) on the same zone model.
 8. **Cross-cutting** — undo/redo (truncate-and-refold), persistence (Codable effect log), networking
    (effect sync), AI search over `legalMoves`.
 

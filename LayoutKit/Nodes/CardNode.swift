@@ -28,6 +28,8 @@ public final class CardNode: SKNode {
     private var cardSize = CGSize(width: 80, height: 112)
     private var face: CardFaceView?
     public private(set) var faceUp = false
+    private var highlighted = false   // a legal candidate — outlined to invite a click
+    private var selected = false      // the picked candidate — lifts and outlines strongly
 
     public override init() {
         super.init()
@@ -75,7 +77,6 @@ public final class CardNode: SKNode {
     private func applyFace() {
         if faceUp, let face {
             body.fillColor = .white
-            body.strokeColor = .darkGray
             let color: SKColor = face.isRed ? .systemRed : .black
             for label in [centerLabel, cornerLabel, cornerLabel2] {
                 label.text = face.text
@@ -84,8 +85,46 @@ public final class CardNode: SKNode {
             }
         } else {
             body.fillColor = SKColor(red: 0.16, green: 0.30, blue: 0.62, alpha: 1.0)
-            body.strokeColor = .white
             for label in [centerLabel, cornerLabel, cornerLabel2] { label.isHidden = true }
+        }
+        applyStroke() // outline reflects highlight/selection; lift is owned by setSelected
+    }
+
+    /// Outline a card to mark it a legal candidate. Purely cosmetic — does not move the card.
+    public func setHighlighted(_ on: Bool) {
+        guard highlighted != on else { return }
+        highlighted = on
+        applyStroke()
+    }
+
+    /// Pick a card: it lifts up and takes a strong outline so the choice is obvious before commit.
+    /// The lift animates over `duration` (pass 0 for an instant set, e.g. on resize or in tests).
+    public func setSelected(_ on: Bool, duration: TimeInterval) {
+        guard selected != on else { return }
+        selected = on
+        applyStroke()
+        let liftedY = selected ? cardSize.height * 0.18 : 0
+        body.removeAction(forKey: "lift")
+        if duration > 0 {
+            body.run(.moveTo(y: liftedY, duration: duration), withKey: "lift")
+        } else {
+            body.position.y = liftedY
+        }
+    }
+
+    /// Stroke colour/width by state (selected > highlighted > plain). Instant — no motion involved,
+    /// so re-asserting it from `applyFace` never disturbs an in-flight lift on `body`.
+    private func applyStroke() {
+        switch (selected, highlighted) {
+        case (true, _):
+            body.strokeColor = .systemYellow
+            body.lineWidth = 4
+        case (false, true):
+            body.strokeColor = .systemTeal
+            body.lineWidth = 3
+        case (false, false):
+            body.strokeColor = faceUp ? .darkGray : .white
+            body.lineWidth = 2
         }
     }
 

@@ -6,7 +6,9 @@ struct LandingPageView: View {
     let scenarios = [
         Scenario(title: "Overview", description: "Full layout system demonstration", type: .overview),
         Scenario(title: "War", description: "Play the War card game end-to-end on the GameEngine", type: .war),
-        Scenario(title: "Durak", description: "Play Durak vs. a simple AI — pick your cards to attack and defend", type: .durak)
+        Scenario(title: "Durak", description: "Play Durak vs. a simple AI — pick your cards to attack and defend", type: .durak),
+        Scenario(title: "Bura", description: "Play Bura vs. a simple AI — trump trick-taking, race to 31 points", type: .bura),
+        Scenario(title: "Solitaire", description: "Play Klondike — drag cards between piles, click to send to foundations", type: .solitaire)
     ]
 
     var body: some View {
@@ -39,6 +41,10 @@ struct ScenarioDetailView: View {
             return WarScene(size: CGSize(width: 1024, height: 768))
         case .durak:
             return DurakScene(size: CGSize(width: 1024, height: 768))
+        case .bura:
+            return BuraScene(size: CGSize(width: 1024, height: 768))
+        case .solitaire:
+            return SolitaireScene(size: CGSize(width: 1024, height: 768))
         default:
             return LayoutScenarioScene.create(for: scenario, contextMenuState: contextMenuState)
         }
