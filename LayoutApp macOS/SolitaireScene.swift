@@ -310,15 +310,19 @@ final class SolitaireScene: SKScene {
         statusLabel.text = "\(onFoundations) / 52"
 
         let won = game.outcome(state) != nil
+        // No meaningful move left (and not a win) → the deal is dead; nudge the player to start over.
+        let deadlocked = !won && SolitaireAnalysis(game: game).isDeadlocked(state)
         messageLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.42)
-        messageLabel.text = won ? "You win!  —  click for a new game" : ""
+        messageLabel.text = won ? "You win!  —  click for a new game"
+            : deadlocked ? "No moves left  —  start a new game" : ""
 
         let y: CGFloat = 26
         let cx = size.width / 2
         controlsNode.addChild(rulePill("Draw: \(rules.drawCount)", name: "ctrl_draw", at: CGPoint(x: cx - 170, y: y)))
         let redeals = rules.redealLimit.map(String.init) ?? "∞"
         controlsNode.addChild(rulePill("Redeals: \(redeals)", name: "ctrl_redeals", at: CGPoint(x: cx, y: y)))
-        controlsNode.addChild(rulePill("New game", name: "btn_newgame", at: CGPoint(x: cx + 170, y: y)))
+        controlsNode.addChild(rulePill("New game", name: "btn_newgame", at: CGPoint(x: cx + 170, y: y),
+                                       emphasized: won || deadlocked))
     }
 
     /// Faint outlines marking every pile, so empty slots read; a ↻ marks a recyclable empty stock.
@@ -347,16 +351,20 @@ final class SolitaireScene: SKScene {
         return node
     }
 
-    private func rulePill(_ text: String, name: String, at point: CGPoint) -> SKNode {
+    private func rulePill(_ text: String, name: String, at point: CGPoint, emphasized: Bool = false) -> SKNode {
         let pill = SKShapeNode(rectOf: CGSize(width: 150, height: 30), cornerRadius: 15)
-        pill.fillColor = SKColor(white: 1.0, alpha: 0.12)
-        pill.strokeColor = SKColor(white: 1.0, alpha: 0.4)
+        pill.fillColor = emphasized ? SKColor.systemOrange.withAlphaComponent(0.9) : SKColor(white: 1.0, alpha: 0.12)
+        pill.strokeColor = emphasized ? .systemYellow : SKColor(white: 1.0, alpha: 0.4)
+        pill.lineWidth = emphasized ? 2.5 : 1
         pill.name = name
         let label = SKLabelNode(text: text)
         label.fontName = "AvenirNext-DemiBold"; label.fontSize = 12; label.fontColor = .white
         label.verticalAlignmentMode = .center; label.horizontalAlignmentMode = .center
         pill.addChild(label)
         pill.position = point
+        if emphasized { // a gentle pulse draws the eye to the only useful action left
+            pill.run(.repeatForever(.sequence([.scale(to: 1.08, duration: 0.6), .scale(to: 1.0, duration: 0.6)])))
+        }
         return pill
     }
 
