@@ -56,15 +56,18 @@ public final class CardNode: SKNode {
 
     public func configure(size: CGSize) {
         cardSize = size
+        let radius = size.width * 0.10
         body.path = CGPath(roundedRect: CGRect(x: -size.width / 2, y: -size.height / 2,
                                                 width: size.width, height: size.height),
-                           cornerWidth: 8, cornerHeight: 8, transform: nil)
-        body.lineWidth = 2
-        centerLabel.fontSize = max(12, min(24, size.width * 0.30))
-        cornerLabel.fontSize = max(10, min(15, size.width * 0.22))
+                           cornerWidth: radius, cornerHeight: radius, transform: nil)
+        body.lineWidth = max(1.5, size.width * 0.026)
+        // Fonts and corner insets scale with the card so it stays proportional at any size (the
+        // ratios reproduce the original 78×108 look — ~23 / ~15 pt, inset 5 / 4).
+        centerLabel.fontSize = max(12, size.width * 0.30)
+        cornerLabel.fontSize = max(9, size.width * 0.19)
         cornerLabel2.fontSize = cornerLabel.fontSize
-        cornerLabel.position = CGPoint(x: -size.width / 2 + 5, y: size.height / 2 - 4)
-        cornerLabel2.position = CGPoint(x: size.width / 2 - 5, y: -size.height / 2 + 4)
+        cornerLabel.position = CGPoint(x: -size.width / 2 + size.width * 0.064, y: size.height / 2 - size.height * 0.037)
+        cornerLabel2.position = CGPoint(x: size.width / 2 - size.width * 0.064, y: -size.height / 2 + size.height * 0.037)
         applyFace()
     }
 

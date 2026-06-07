@@ -29,9 +29,9 @@ final class SolitaireScene: SKScene {
     private var dragStart: CGPoint = .zero
     private var dragMoved = false
 
-    private let cardSize = CGSize(width: 78, height: 108)
-    private let faceUpFan: CGFloat = 30
-    private let faceDownFan: CGFloat = 14
+    private let cardAspect: CGFloat = 108.0 / 78.0   // the 78×108 baseline aspect ratio
+    private let faceUpFanRatio: CGFloat = 0.28        // fan offsets are a fraction of card height
+    private let faceDownFanRatio: CGFloat = 0.13
 
     private let boardNode = SKNode()      // pile placeholders, behind the cards
     private let cardTable = CardTableNode()
@@ -69,7 +69,9 @@ final class SolitaireScene: SKScene {
 
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
-        guard state != nil, !busy else { return }
+        // Re-flow on any resize — including the SpriteView's initial resize from the scene's start size
+        // to the real window, which lands mid-deal-animation. Skip only mid-drag.
+        guard state != nil, dragCards.isEmpty else { return }
         applyState(duration: 0)
     }
 
@@ -78,8 +80,18 @@ final class SolitaireScene: SKScene {
     private var margin: CGFloat { 28 }
     private var columnSpacing: CGFloat { (size.width - margin * 2) / 7 }
     private func columnX(_ c: Int) -> CGFloat { margin + columnSpacing * (CGFloat(c) + 0.5) }
+
+    /// Cards scale with the board: width is a fixed fraction of a tableau column (so they grow with the
+    /// window), capped by height so a wide-short window can't overflow vertically. 1024×768 ≈ 78×108.
+    private var cardSize: CGSize {
+        let width = min(columnSpacing * 0.564, size.height * 0.155 / cardAspect)
+        return CGSize(width: width, height: width * cardAspect)
+    }
+    private var faceUpFan: CGFloat { cardSize.height * faceUpFanRatio }
+    private var faceDownFan: CGFloat { cardSize.height * faceDownFanRatio }
+
     private var topRowY: CGFloat { size.height - margin - cardSize.height / 2 }
-    private var tableauTopY: CGFloat { topRowY - cardSize.height - 24 }
+    private var tableauTopY: CGFloat { topRowY - cardSize.height * 1.22 }
     private var stockPos: CGPoint { CGPoint(x: columnX(0), y: topRowY) }
     private var wastePos: CGPoint { CGPoint(x: columnX(1), y: topRowY) }
     private func foundationPos(_ i: Int) -> CGPoint { CGPoint(x: columnX(3 + i), y: topRowY) }
@@ -263,7 +275,7 @@ final class SolitaireScene: SKScene {
         let wasteCards = s.core[waste]?.cards ?? []
         for (i, card) in wasteCards.enumerated() {
             let fromTop = wasteCards.count - 1 - i // 0 = top (playable), older fan to the left
-            let dx = -CGFloat(min(fromTop, 2)) * 17
+            let dx = -CGFloat(min(fromTop, 2)) * cardSize.width * 0.22
             p[card.value] = CardPlacement(position: CGPoint(x: wastePos.x + dx, y: wastePos.y),
                                           zPosition: 1000 + CGFloat(i), size: cardSize, faceUp: true)
         }

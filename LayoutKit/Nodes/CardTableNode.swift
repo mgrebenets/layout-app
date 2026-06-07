@@ -84,7 +84,7 @@ public final class CardTableNode: SKNode {
             node.run(.group([
                 .move(to: placement.position, duration: duration),
                 .rotate(toAngle: placement.zRotation, duration: duration, shortestUnitArc: true),
-            ]))
+            ]), withKey: "place") // keyed so a re-apply (e.g. on resize) replaces, not races, this move
         }
         run(.sequence([.wait(forDuration: duration), .run(completion)]))
     }
