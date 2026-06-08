@@ -51,6 +51,15 @@ struct ScenarioDetailView: View {
     }
 
     var body: some View {
+        if scenario.type == .solitaire {
+            // Solitaire has its own SwiftUI host (stable scene + cross-platform seed-entry alert).
+            SolitaireHostView()
+        } else {
+            sceneBody
+        }
+    }
+
+    private var sceneBody: some View {
         ZStack {
             SpriteView(scene: makeScene())
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

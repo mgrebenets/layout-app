@@ -20,7 +20,12 @@ final class DurakScene: SKScene {
     private var roundResolved = false
     private var busy = false                     // true while an animation is playing
     private var lastPlacements: [Int: CardPlacement] = [:]
-    private var selectedCard: CardID?            // the human's lifted candidate, awaiting commit
+
+    // Drag-and-drop state for the human's single-card plays.
+    private var dragCard: CardID?
+    private var dragStart: CGPoint = .zero
+    private var dragOffset: CGPoint = .zero
+    private var dragMoved = false
 
     private let me = SeatID(0)
     private let tableCardSize = CGSize(width: 80, height: 112)
@@ -73,7 +78,7 @@ final class DurakScene: SKScene {
     private func startRound() {
         state = match.newRound(seed: UInt64.random(in: UInt64.min...UInt64.max))
         roundResolved = false
-        selectedCard = nil
+        dragCard = nil
         cardTable.reset()
         lastPlacements = placements(for: state)
         busy = true
@@ -90,7 +95,7 @@ final class DurakScene: SKScene {
 
     private func perform(_ move: DurakMove) {
         busy = true
-        selectedCard = nil
+        dragCard = nil
         var snapshots: [DurakState] = []
         var s = state!
         foldInto(&s, game.lower(move, in: s))
@@ -163,8 +168,10 @@ final class DurakScene: SKScene {
     // MARK: - Input
 
     override func mouseDown(with event: NSEvent) {
-        let hit = nodes(at: event.location(in: self))
+        let point = event.location(in: self)
+        let hit = nodes(at: point)
 
+        // Rule pills are allowed even mid-animation.
         if hit.contains(where: { $0.name == "ctrl_players" }) {
             let next = match.playerCount >= 4 ? 2 : match.playerCount + 1
             match = DurakMatch(playerCount: next, rules: match.rules,
@@ -192,13 +199,28 @@ final class DurakScene: SKScene {
         guard state.core.currentSeat == me else { return }
         if hit.contains(where: { $0.name == "btn_take" }) { humanMove(.take); return }
         if hit.contains(where: { $0.name == "btn_pass" }) { humanMove(.pass); return }
-        if hit.contains(where: { $0.name == "btn_play" }) { commitSelected(); return }
-        if let card = cardID(at: hit) {
-            handleCardClick(card)
-        } else if selectedCard != nil {
-            selectedCard = nil            // clicked empty space — cancel the candidate
-            refreshInputLayer()
+
+        // A hand card: double-click plays it directly; otherwise begin a drag.
+        if let card = cardID(at: hit), state.core[hand(me)]?.contains(card) == true {
+            if event.clickCount >= 2 { playCard(card) } else { beginDrag(card, at: point) }
         }
+    }
+
+    override func mouseDragged(with event: NSEvent) {
+        guard let card = dragCard, let node = cardTable.node(card.value) else { return }
+        let point = event.location(in: self)
+        if hypot(point.x - dragStart.x, point.y - dragStart.y) > 6 { dragMoved = true }
+        node.position = CGPoint(x: point.x + dragOffset.x, y: point.y + dragOffset.y)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        guard let card = dragCard else { return }
+        let point = event.location(in: self)
+        let moved = dragMoved
+        clearDragHighlights()
+        dragCard = nil
+        // A drag plays the card on drop; a bare click (no drag) does nothing for a single card.
+        if moved { resolveDrop(card, at: point) } else { snapBack() }
     }
 
     private func cardID(at hits: [SKNode]) -> CardID? {
@@ -214,45 +236,75 @@ final class DurakScene: SKScene {
         return nil
     }
 
-    /// First click on a legal card lifts it as a candidate; clicking it again (or Play) commits.
-    /// Clicking another legal card switches the candidate. Illegal cards are ignored.
-    private func handleCardClick(_ card: CardID) {
-        guard legalHandCardValues(in: state).contains(card.value) else { return }
-        if selectedCard == card {
-            commitSelected()
+    /// Lift a hand card to drag it; while defending, reactively outline the attacks it can beat (the only
+    /// highlight in the new UX — no standing legal-move glow).
+    private func beginDrag(_ card: CardID, at point: CGPoint) {
+        guard let node = cardTable.node(card.value) else { return }
+        dragCard = card
+        dragStart = point
+        dragMoved = false
+        dragOffset = CGPoint(x: node.position.x - point.x, y: node.position.y - point.y)
+        node.setLayer(90_000)
+        if state.phase == .defending {
+            for pair in state.table where pair.defense == nil
+                && DurakGame.beats(state.registry.face(card), state.registry.face(pair.attack), trump: state.trump) {
+                cardTable.node(pair.attack.value)?.setHighlighted(true)
+            }
+        }
+    }
+
+    /// Resolve a drop: above the hand is a play (attack, or defend the attack under the cursor / leftmost it
+    /// can beat); otherwise — or if the play is illegal — the card snaps home.
+    private func resolveDrop(_ card: CardID, at point: CGPoint) {
+        var move: DurakMove?
+        if point.y > 205 { // dropped into the play area, above the hand row
+            switch state.phase {
+            case .attacking, .takingThrowIn:
+                move = .attack(card)
+            case .defending:
+                move = defenseMove(with: card, onto: attackCard(at: point)) ?? defenseMove(with: card)
+            }
+        }
+        if let move, game.legalMoves(for: me, in: state).contains(move) {
+            perform(move)
         } else {
-            selectedCard = card
-            refreshInputLayer()
+            snapBack()
         }
     }
 
-    /// Play the lifted candidate: attack with it, or beat the first attack it can in defence.
-    private func commitSelected() {
-        guard let card = selectedCard else { return }
+    /// Double-click play: attack with the card, or beat the leftmost attack it can in defence.
+    private func playCard(_ card: CardID) {
+        let move: DurakMove?
         switch state.phase {
-        case .attacking, .takingThrowIn:
-            humanMove(.attack(card))
-        case .defending:
-            let legal = game.legalMoves(for: me, in: state)
-            if let move = legal.first(where: {
-                if case let .defend(_, with) = $0 { return with == card } else { return false }
-            }) {
-                humanMove(move)
-            }
+        case .attacking, .takingThrowIn: move = .attack(card)
+        case .defending: move = defenseMove(with: card)
+        }
+        if let move { humanMove(move) }
+    }
+
+    /// A legal defence using `card`, optionally against a specific attack (else the leftmost it can beat).
+    private func defenseMove(with card: CardID, onto attack: CardID? = nil) -> DurakMove? {
+        game.legalMoves(for: me, in: state).first {
+            guard case let .defend(a, w) = $0 else { return false }
+            return w == card && (attack == nil || a == attack)
         }
     }
 
-    /// The values of the human's hand cards that begin a legal move right now (for highlighting).
-    private func legalHandCardValues(in s: DurakState) -> Set<Int> {
-        var result: Set<Int> = []
-        for move in game.legalMoves(for: me, in: s) {
-            switch move {
-            case let .attack(card): result.insert(card.value)
-            case let .defend(_, with): result.insert(with.value)
-            case .take, .pass: break
-            }
+    /// The undefended attack whose card node contains `point` (for targeted defence drops).
+    private func attackCard(at point: CGPoint) -> CardID? {
+        for pair in state.table where pair.defense == nil {
+            if let node = cardTable.node(pair.attack.value), node.contains(point) { return pair.attack }
         }
-        return result
+        return nil
+    }
+
+    private func snapBack() {
+        lastPlacements = placements(for: state)
+        cardTable.apply(lastPlacements, duration: 0.16) {}
+    }
+
+    private func clearDragHighlights() {
+        for pair in state.table { cardTable.node(pair.attack.value)?.setHighlighted(false) }
     }
 
     private func humanMove(_ move: DurakMove) {
@@ -304,20 +356,7 @@ final class DurakScene: SKScene {
             placeHand(s, seat: seat, faceUp: false, centerX: slot.x, rowY: slot.y, cardHeight: 66,
                       maxWidth: 220, baseZ: 4000 + CGFloat(i) * 200, into: &p)
         }
-        decorateForInput(&p, s)
         return p
-    }
-
-    /// When it's the human's settled turn, outline the cards they may play and lift their candidate.
-    /// Gated on `!busy` so animation snapshots and AI turns stay undecorated.
-    private func decorateForInput(_ p: inout [Int: CardPlacement], _ s: DurakState) {
-        guard !busy, s.core.currentSeat == me, game.outcome(s) == nil else { return }
-        for value in legalHandCardValues(in: s) {
-            p[value]?.highlighted = true
-        }
-        if let selected = selectedCard {
-            p[selected.value]?.selected = true
-        }
     }
 
     private func placeHand(_ s: DurakState, seat: SeatID, faceUp: Bool, centerX: CGFloat, rowY: CGFloat,
@@ -384,9 +423,6 @@ final class DurakScene: SKScene {
             controlsNode.addChild(button("Take", name: "btn_take", at: point))
         } else if legal.contains(.pass) {
             controlsNode.addChild(button(state.phase == .takingThrowIn ? "Done" : "Pass / Bita", name: "btn_pass", at: point))
-        }
-        if selectedCard != nil {
-            controlsNode.addChild(button("Play", name: "btn_play", at: CGPoint(x: point.x, y: point.y - 52)))
         }
     }
 
@@ -487,11 +523,10 @@ final class DurakScene: SKScene {
     private func hintText() -> String {
         if game.outcome(state) != nil { return "" }
         guard state.core.currentSeat == me, !busy else { return "" }
-        if selectedCard != nil { return "Click the card again or Play to confirm  ·  click elsewhere to cancel" }
         switch state.phase {
-        case .attacking: return "Click a card to attack"
-        case .defending: return "Click a card to beat the attack, or Take"
-        case .takingThrowIn: return "Throw in matching cards, or click Done"
+        case .attacking: return "Drag a card up to attack — or double-click it"
+        case .defending: return "Drag a card onto the attack to beat it (or double-click), or Take"
+        case .takingThrowIn: return "Drag matching cards in (or double-click), or Done"
         }
     }
 }

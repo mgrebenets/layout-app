@@ -22,6 +22,10 @@ final class SolitaireScene: SKScene {
     private var busy = false
     private var lastPlacements: [Int: CardPlacement] = [:]
     private let me = SeatID(0)
+    private var seed: UInt64 = 0   // the current deal's seed — shown and re-enterable so layouts are reproducible
+    /// The SwiftUI host sets this to present its own (cross-platform) seed-entry UI. Keeps platform chrome
+    /// out of the scene — see `SolitaireHostView`.
+    var onRequestSeedEntry: (() -> Void)?
 
     // Drag state.
     private var dragCards: [Int] = []                 // card values being dragged (head first)
@@ -40,6 +44,29 @@ final class SolitaireScene: SKScene {
     private let statusLabel = SKLabelNode()
     private let messageLabel = SKLabelNode()
 
+    // Win celebrations. On a real win one fires at random; each is also previewable with a key
+    // (c = cascade, f = fireworks, g = fan/glow). The cascade is the Microsoft-style waterfall of bouncing
+    // cards driven by `update`; fireworks and fan/glow are SKAction-based. Overlay nodes live in cascadeNode.
+    private enum Celebration: CaseIterable { case cascade, fireworks, fanGlow, speedy }
+    private let cascadeNode = SKNode()
+    private let uiZ: CGFloat = 1_000_000  // controls/labels sit above the celebration so they stay readable
+    private var celebrating = false
+    private var celebrationIsDemo = false // a key-press preview restores the board when it ends; a win doesn't
+    private var celebrationKind: Celebration?
+    private var cascadeRunning = false    // the cascade physics loop is active (only the cascade uses update)
+    private var lastUpdate: TimeInterval = 0
+    private var launchAccumulator: TimeInterval = 0
+    private var launchQueue: [(texture: SKTexture, start: CGPoint, size: CGSize)] = []
+    private var bouncers: [Bouncer] = []
+    private var trailSprites: [SKSpriteNode] = []
+    private var stampCount = 0
+
+    private struct Bouncer {
+        let sprite: SKSpriteNode
+        var velocity: CGVector
+        var lastStamp: CGPoint
+    }
+
     private let stock = ZoneID.deck
     private let waste = ZoneID("waste")
     private func tableau(_ i: Int) -> ZoneID { game.tableau(i) }
@@ -54,9 +81,11 @@ final class SolitaireScene: SKScene {
         boardNode.zPosition = -10
         addChild(boardNode)
         addChild(cardTable)
-        for node in [uiNode, controlsNode] { node.zPosition = 100; addChild(node) }
-        configure(statusLabel, size: 15, font: "AvenirNext-DemiBold"); statusLabel.zPosition = 100
-        configure(messageLabel, size: 26, font: "AvenirNext-Bold"); messageLabel.zPosition = 100
+        cascadeNode.zPosition = 60 // above the cards, below the controls — the win cascade lives here
+        addChild(cascadeNode)
+        for node in [uiNode, controlsNode] { node.zPosition = uiZ; addChild(node) }
+        configure(statusLabel, size: 15, font: "AvenirNext-DemiBold"); statusLabel.zPosition = uiZ
+        configure(messageLabel, size: 26, font: "AvenirNext-Bold"); messageLabel.zPosition = uiZ
         addChild(statusLabel)
         addChild(messageLabel)
         cardTable.faceProvider = { [weak self] id in
@@ -70,8 +99,8 @@ final class SolitaireScene: SKScene {
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         // Re-flow on any resize — including the SpriteView's initial resize from the scene's start size
-        // to the real window, which lands mid-deal-animation. Skip only mid-drag.
-        guard state != nil, dragCards.isEmpty else { return }
+        // to the real window, which lands mid-deal-animation. Skip mid-drag and during the win cascade.
+        guard state != nil, dragCards.isEmpty, !celebrating else { return }
         applyState(duration: 0)
     }
 
@@ -103,13 +132,21 @@ final class SolitaireScene: SKScene {
 
     // MARK: - Game flow
 
-    private func startGame() {
+    private func startGame(seed: UInt64? = nil) {
+        stopCelebration()
+        self.seed = seed ?? UInt64.random(in: 1...999_999_999) // friendly, shareable game numbers
         game = SolitaireGame(rules: rules)
-        state = game.setup(seatCount: 1, seed: UInt64.random(in: UInt64.min...UInt64.max))
+        state = game.setup(seatCount: 1, seed: self.seed)
         cardTable.reset()
         busy = true
         applyState(duration: 0.3) { [weak self] in self?.busy = false }
     }
+
+    /// The current deal's seed, for the SwiftUI host to display / pre-fill.
+    var currentSeed: UInt64 { seed }
+
+    /// Deal a specific seed — called by the host once the player enters one.
+    func dealGame(seed: UInt64) { startGame(seed: seed) }
 
     private func perform(_ move: SolitaireMove) {
         busy = true
@@ -122,7 +159,11 @@ final class SolitaireScene: SKScene {
             guardCount += 1
             if guardCount > 10_000 { break }
         }
-        applyState(duration: 0.2) { [weak self] in self?.busy = false }
+        let won = game.outcome(state) != nil
+        applyState(duration: 0.2) { [weak self] in
+            self?.busy = false
+            if won { self?.startWinCelebration() }
+        }
     }
 
     /// Lay every card out for the current state and animate it home. Re-homes any dragged nodes too.
@@ -154,7 +195,9 @@ final class SolitaireScene: SKScene {
         if hit.contains(where: { $0.name == "ctrl_redeals" }) {
             rules.redealLimit = nextRedealLimit(rules.redealLimit); startGame(); return
         }
+        if hit.contains(where: { $0.name == "ctrl_seed" }) { onRequestSeedEntry?(); return }
         if hit.contains(where: { $0.name == "btn_newgame" }) { startGame(); return }
+        if hit.contains(where: { $0.name == "btn_finish" }) { runAutoFinish(); return }
 
         if game.outcome(state) != nil { startGame(); return } // click anywhere to start a new deal
 
@@ -310,19 +353,32 @@ final class SolitaireScene: SKScene {
         statusLabel.text = "\(onFoundations) / 52"
 
         let won = game.outcome(state) != nil
+        let analysis = SolitaireAnalysis(game: game)
         // No meaningful move left (and not a win) → the deal is dead; nudge the player to start over.
-        let deadlocked = !won && SolitaireAnalysis(game: game).isDeadlocked(state)
+        let deadlocked = !won && analysis.isDeadlocked(state)
+        // The board is solved-but-tedious → offer to auto-play it home.
+        let canFinish = !won && !deadlocked && analysis.autoFinishPlan(state) != nil
         messageLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.42)
         messageLabel.text = won ? "You win!  —  click for a new game"
             : deadlocked ? "No moves left  —  start a new game" : ""
 
         let y: CGFloat = 26
         let cx = size.width / 2
-        controlsNode.addChild(rulePill("Draw: \(rules.drawCount)", name: "ctrl_draw", at: CGPoint(x: cx - 170, y: y)))
         let redeals = rules.redealLimit.map(String.init) ?? "∞"
-        controlsNode.addChild(rulePill("Redeals: \(redeals)", name: "ctrl_redeals", at: CGPoint(x: cx, y: y)))
-        controlsNode.addChild(rulePill("New game", name: "btn_newgame", at: CGPoint(x: cx + 170, y: y),
-                                       emphasized: won || deadlocked))
+        let pills = [("Draw: \(rules.drawCount)", "ctrl_draw"),
+                     ("Redeals: \(redeals)", "ctrl_redeals"),
+                     ("Seed: \(seed)", "ctrl_seed"),
+                     ("New game", "btn_newgame")]
+        let spacing: CGFloat = 165
+        let startX = cx - spacing * CGFloat(pills.count - 1) / 2
+        for (i, pill) in pills.enumerated() {
+            let emphasized = pill.1 == "btn_newgame" && (won || deadlocked)
+            controlsNode.addChild(rulePill(pill.0, name: pill.1,
+                                           at: CGPoint(x: startX + spacing * CGFloat(i), y: y), emphasized: emphasized))
+        }
+        if canFinish {
+            controlsNode.addChild(rulePill("Finish", name: "btn_finish", at: CGPoint(x: cx, y: y + 40), emphasized: true))
+        }
     }
 
     /// Faint outlines marking every pile, so empty slots read; a ↻ marks a recyclable empty stock.
@@ -374,5 +430,324 @@ final class SolitaireScene: SKScene {
         label.fontColor = .white
         label.verticalAlignmentMode = .center
         label.horizontalAlignmentMode = .center
+    }
+
+    // MARK: - Win celebrations
+
+    private let launchInterval: TimeInterval = 0.13
+
+    /// SpriteKit's per-frame tick. Only the cascade celebration uses it: launch queued cards on a timer, then
+    /// integrate each airborne card under gravity, bounce it off the bottom edge, and stamp a trail — the
+    /// classic Windows Solitaire waterfall. Idle otherwise (it only tracks `lastUpdate` for the next `dt`).
+    override func update(_ currentTime: TimeInterval) {
+        let dt = min(max(currentTime - lastUpdate, 0), 1.0 / 30.0) // clamp so a stutter can't fling cards
+        lastUpdate = currentTime
+        guard cascadeRunning else { return }
+
+        launchAccumulator += dt
+        while launchAccumulator >= launchInterval, !launchQueue.isEmpty {
+            launchAccumulator -= launchInterval
+            launchNextCard()
+        }
+
+        let gravity: CGFloat = 1500, restitution: CGFloat = 0.85
+        let floor = cardSize.height / 2
+        let step = cardSize.width * 0.18 // stamp a trail copy every fraction of a card travelled
+        for i in bouncers.indices {
+            var b = bouncers[i]
+            b.velocity.dy -= gravity * dt
+            var p = b.sprite.position
+            p.x += b.velocity.dx * dt
+            p.y += b.velocity.dy * dt
+            if p.y <= floor, b.velocity.dy < 0 { // bounce off the bottom edge, losing a little energy
+                p.y = floor
+                b.velocity.dy = -b.velocity.dy * restitution
+            }
+            b.sprite.position = p
+            if hypot(p.x - b.lastStamp.x, p.y - b.lastStamp.y) >= step {
+                stampTrail(b.sprite.texture, at: p, size: b.sprite.size)
+                b.lastStamp = p
+            }
+            bouncers[i] = b
+        }
+        bouncers.removeAll { b in // a card that has drifted off the side is done flying
+            let gone = b.sprite.position.x < -cardSize.width * 2 || b.sprite.position.x > size.width + cardSize.width * 2
+            if gone { b.sprite.removeFromParent() }
+            return gone
+        }
+        if launchQueue.isEmpty, bouncers.isEmpty { cascadeRunning = false; finishCelebration() }
+    }
+
+    /// Fire a random celebration for a real win.
+    private func startWinCelebration() {
+        startCelebration(Celebration.allCases.randomElement() ?? .cascade, demo: false)
+    }
+
+    private func startCelebration(_ kind: Celebration, demo: Bool) {
+        guard !celebrating, view != nil, state != nil else { return }
+        celebrating = true
+        celebrationIsDemo = demo
+        celebrationKind = kind
+        switch kind {
+        case .cascade:   startCascade(demo: demo)
+        case .fireworks: startFireworks()
+        case .fanGlow:   startFanGlow(demo: demo)
+        case .speedy:    startSpeedy(demo: demo)
+        }
+    }
+
+    // MARK: Cascade
+
+    /// Snapshot cards to textures and queue them to launch. A real win launches the foundation cards top-first
+    /// (kings, then queens, …); a preview launches every card from wherever it currently sits.
+    private func startCascade(demo: Bool) {
+        guard let view else { celebrating = false; return }
+        var queue: [(texture: SKTexture, start: CGPoint, size: CGSize)] = []
+        if demo {
+            for (_, zone) in state.core.zones {
+                for card in zone.cards {
+                    guard let node = cardTable.node(card.value), let texture = view.texture(from: node) else { continue }
+                    queue.append((texture, node.position, cardSize))
+                }
+            }
+            queue.shuffle()
+        } else {
+            let piles = (0..<4).map { state.core[foundation($0)]?.cards ?? [] }
+            let maxDepth = piles.map(\.count).max() ?? 0
+            for depth in 0..<maxDepth {
+                for f in 0..<4 {
+                    let pile = piles[f]; let idx = pile.count - 1 - depth
+                    guard idx >= 0, let node = cardTable.node(pile[idx].value),
+                          let texture = view.texture(from: node) else { continue }
+                    queue.append((texture, foundationPos(f), cardSize))
+                }
+            }
+        }
+        guard !queue.isEmpty else { celebrating = false; return }
+        launchQueue = queue
+        launchAccumulator = launchInterval // launch the first card on the next frame
+        cardTable.isHidden = true          // the cascade sprites take over from here
+        cascadeRunning = true
+    }
+
+    private func launchNextCard() {
+        let item = launchQueue.removeFirst()
+        let sprite = SKSpriteNode(texture: item.texture, size: item.size)
+        sprite.position = item.start
+        sprite.zPosition = 100_000 // the live card rides above its own trail
+        cascadeNode.addChild(sprite)
+        let direction: CGFloat = Bool.random() ? 1 : -1
+        let velocity = CGVector(dx: direction * CGFloat.random(in: 120...300),
+                                dy: CGFloat.random(in: 0...160)) // a small upward pop; the fall does the rest
+        bouncers.append(Bouncer(sprite: sprite, velocity: velocity, lastStamp: item.start))
+    }
+
+    /// Drop a non-moving copy of a flying card — these accumulate into the rainbow waterfall.
+    private func stampTrail(_ texture: SKTexture?, at point: CGPoint, size: CGSize) {
+        guard let texture else { return }
+        let stamp = SKSpriteNode(texture: texture, size: size)
+        stamp.position = point
+        stampCount += 1
+        stamp.zPosition = CGFloat(stampCount % 90_000) // newest on top, kept below the live cards
+        cascadeNode.addChild(stamp)
+        trailSprites.append(stamp)
+        if trailSprites.count > 6000 { trailSprites.removeFirst().removeFromParent() } // safety cap
+    }
+
+    // MARK: Fireworks
+
+    /// A dozen radial particle bursts over a few seconds, then finish. The board stays put underneath.
+    private func startFireworks() {
+        var actions: [SKAction] = []
+        for _ in 0..<12 {
+            actions.append(.run { [weak self] in self?.spawnFireworkBurst() })
+            actions.append(.wait(forDuration: 0.32))
+        }
+        actions.append(.wait(forDuration: 1.0))
+        actions.append(.run { [weak self] in self?.finishCelebration() })
+        cascadeNode.run(.sequence(actions), withKey: "celebration")
+    }
+
+    private func spawnFireworkBurst() {
+        let center = CGPoint(x: CGFloat.random(in: size.width * 0.15...size.width * 0.85),
+                             y: CGFloat.random(in: size.height * 0.45...size.height * 0.85))
+        let baseHue = CGFloat.random(in: 0...1)
+        let particles = 30
+        let radius = max(3, cardSize.width * 0.045)
+        for k in 0..<particles {
+            let angle = CGFloat(k) / CGFloat(particles) * .pi * 2 + CGFloat.random(in: -0.08...0.08)
+            let speed = CGFloat.random(in: 70...150)
+            let dot = SKShapeNode(circleOfRadius: radius)
+            let hue = (baseHue + CGFloat.random(in: -0.05...0.05) + 1).truncatingRemainder(dividingBy: 1)
+            dot.fillColor = SKColor(hue: hue, saturation: 0.85, brightness: 1.0, alpha: 1.0)
+            dot.strokeColor = .clear
+            dot.position = center
+            dot.zPosition = 50_000
+            cascadeNode.addChild(dot)
+            let drift = CGVector(dx: cos(angle) * speed, dy: sin(angle) * speed - 40) // -40: a little gravity sag
+            let fly = SKAction.move(by: drift, duration: 1.1); fly.timingMode = .easeOut
+            let fade = SKAction.sequence([.wait(forDuration: 0.55), .fadeOut(withDuration: 0.55)])
+            dot.run(.sequence([.group([fly, fade]), .removeFromParent()]))
+        }
+    }
+
+    // MARK: Fan / glow
+
+    /// Cards fly out from their piles into a big pulsing sunburst, each rotated to point outward and glinting
+    /// with a gold scale-pulse. Sprite copies, so the live board is untouched; a preview settles back.
+    private func startFanGlow(demo: Bool) {
+        let cards = celebrationSprites(demo: demo)
+        guard !cards.isEmpty else { celebrating = false; return }
+        cardTable.isHidden = true
+        let center = CGPoint(x: size.width / 2, y: size.height * 0.52)
+        let radius = min(size.width, size.height) * 0.34
+        let n = cards.count
+        for (i, card) in cards.enumerated() {
+            let sprite = SKSpriteNode(texture: card.texture, size: cardSize)
+            sprite.position = card.start
+            sprite.zPosition = 40_000 + CGFloat(i)
+            cascadeNode.addChild(sprite)
+            let angle = CGFloat(i) / CGFloat(n) * .pi * 2
+            let target = CGPoint(x: center.x + cos(angle) * radius, y: center.y + sin(angle) * radius)
+            let out = SKAction.move(to: target, duration: 0.55); out.timingMode = .easeOut
+            let spin = SKAction.rotate(toAngle: angle + .pi / 2, duration: 0.55, shortestUnitArc: true)
+            let glow = SKAction.repeatForever(.sequence([.scale(to: 1.14, duration: 0.45), .scale(to: 1.0, duration: 0.45)]))
+            sprite.run(.sequence([.wait(forDuration: Double(i) * 0.015), .group([out, spin]), glow]))
+        }
+        cascadeNode.run(.sequence([.wait(forDuration: 2.8), .run { [weak self] in self?.finishCelebration() }]),
+                        withKey: "celebration")
+    }
+
+    // MARK: Speedy
+
+    /// Cards go wild: every card zips to a string of random spots all over the screen while spinning around
+    /// its centre, pulsing big-then-small, and shimmering through bright colours. Pure fun. (Requested by a
+    /// 7-year-old.) A real win keeps the party going until New game; a preview settles back after a few seconds.
+    private func startSpeedy(demo: Bool) {
+        let cards = celebrationSprites(demo: demo)
+        guard !cards.isEmpty else { celebrating = false; return }
+        cardTable.isHidden = true
+        let palette: [SKColor] = [.systemPink, .systemYellow, .systemTeal, .systemGreen, .systemOrange, .systemPurple, .systemRed]
+        for (i, card) in cards.enumerated() {
+            let sprite = SKSpriteNode(texture: card.texture, size: cardSize)
+            sprite.position = card.start
+            sprite.zPosition = 40_000 + CGFloat(i)
+            cascadeNode.addChild(sprite)
+
+            // Zip around the screen through a fresh string of random spots, forever.
+            let hops = (0..<18).map { _ -> SKAction in
+                let hop = SKAction.move(to: randomScreenPoint(), duration: TimeInterval.random(in: 0.25...0.5))
+                hop.timingMode = .easeInEaseOut
+                return hop
+            }
+            sprite.run(.repeatForever(.sequence(hops)))
+            // Spin around its own centre…
+            let spin: CGFloat = (Bool.random() ? 1 : -1) * .pi * 2
+            sprite.run(.repeatForever(.rotate(byAngle: spin, duration: TimeInterval.random(in: 0.6...1.2))))
+            // …pulse big-then-small…
+            sprite.run(.repeatForever(.sequence([.scale(to: 1.35, duration: 0.3), .scale(to: 0.75, duration: 0.3)])))
+            // …and shimmer through colours.
+            let glow = palette.shuffled().map { SKAction.colorize(with: $0, colorBlendFactor: 0.55, duration: 0.35) }
+            sprite.run(.repeatForever(.sequence(glow)))
+        }
+        cascadeNode.run(.sequence([.wait(forDuration: 4.0), .run { [weak self] in self?.finishCelebration() }]),
+                        withKey: "celebration")
+    }
+
+    /// Snapshot cards to (texture, start position) for the action-based celebrations. A preview grabs every
+    /// card where it sits; a real win grabs the foundation stacks.
+    private func celebrationSprites(demo: Bool) -> [(texture: SKTexture, start: CGPoint)] {
+        guard let view else { return [] }
+        var out: [(texture: SKTexture, start: CGPoint)] = []
+        if demo {
+            for (_, zone) in state.core.zones {
+                for card in zone.cards {
+                    guard let node = cardTable.node(card.value), let t = view.texture(from: node) else { continue }
+                    out.append((t, node.position))
+                }
+            }
+        } else {
+            for f in 0..<4 {
+                for card in state.core[foundation(f)]?.cards ?? [] {
+                    guard let node = cardTable.node(card.value), let t = view.texture(from: node) else { continue }
+                    out.append((t, foundationPos(f)))
+                }
+            }
+        }
+        return out
+    }
+
+    /// A random point fully on-screen (card-sized padding so cards stay visible). Clamped so it's safe even
+    /// in a tiny window.
+    private func randomScreenPoint() -> CGPoint {
+        CGPoint(x: CGFloat.random(in: cardSize.width...max(cardSize.width + 1, size.width - cardSize.width)),
+                y: CGFloat.random(in: cardSize.height...max(cardSize.height + 1, size.height - cardSize.height)))
+    }
+
+    // MARK: Lifecycle of a celebration
+
+    /// Called when a celebration's motion is over. A preview restores the board; a real win stays on screen
+    /// (locked) until the player starts a new game.
+    private func finishCelebration() {
+        cascadeRunning = false
+        guard celebrationIsDemo else { return }
+        stopCelebration()
+        applyState(duration: 0)
+    }
+
+    private func stopCelebration() {
+        celebrating = false
+        celebrationIsDemo = false
+        celebrationKind = nil
+        cascadeRunning = false
+        launchQueue = []
+        bouncers = []
+        trailSprites = []
+        launchAccumulator = 0
+        stampCount = 0
+        cascadeNode.removeAllActions()
+        cascadeNode.removeAllChildren()
+        cardTable.isHidden = false
+    }
+
+    // MARK: - Auto-finish
+
+    /// Play the greedy auto-finish plan, animating each move, then celebrate the win.
+    private func runAutoFinish() {
+        guard let plan = SolitaireAnalysis(game: game).autoFinishPlan(state), !plan.isEmpty else { return }
+        busy = true
+        playPlan(plan, index: 0)
+    }
+
+    private func playPlan(_ plan: [SolitaireMove], index: Int) {
+        guard index < plan.count else {
+            busy = false
+            if game.outcome(state) != nil { startWinCelebration() }
+            return
+        }
+        foldInto(&state, game.lower(plan[index], in: state))
+        var guardCount = 0
+        while true {
+            let batch = game.advance(state)
+            if batch.isEmpty { break }
+            foldInto(&state, batch)
+            guardCount += 1
+            if guardCount > 10_000 { break }
+        }
+        applyState(duration: 0.12) { [weak self] in self?.playPlan(plan, index: index + 1) }
+    }
+
+    // MARK: - Preview keys
+
+    /// c = cascade, f = fireworks, g = fan/glow, s = speedy. Each runs a non-destructive preview from the
+    /// cards' current positions and restores the board afterwards.
+    override func keyDown(with event: NSEvent) {
+        switch event.charactersIgnoringModifiers?.lowercased() {
+        case "c": startCelebration(.cascade, demo: true)
+        case "f": startCelebration(.fireworks, demo: true)
+        case "g": startCelebration(.fanGlow, demo: true)
+        case "s": startCelebration(.speedy, demo: true)
+        default:  super.keyDown(with: event)
+        }
     }
 }
