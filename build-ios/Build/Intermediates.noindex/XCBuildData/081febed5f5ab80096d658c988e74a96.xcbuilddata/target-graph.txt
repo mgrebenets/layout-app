@@ -1,6 +1,0 @@
-Target dependency graph (3 targets)
-Target 'LayoutApp macOS' in project 'LayoutApp'
-➜ Explicit dependency on target 'LayoutKit' in project 'LayoutApp'
-➜ Explicit dependency on target 'GameEngine' in project 'LayoutApp'
-Target 'GameEngine' in project 'LayoutApp' (no dependencies)
-Target 'LayoutKit' in project 'LayoutApp' (no dependencies)

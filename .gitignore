@@ -34,3 +34,5 @@ thumbs.db
 
 # temp
 *.tmp
+
+build_ios/
