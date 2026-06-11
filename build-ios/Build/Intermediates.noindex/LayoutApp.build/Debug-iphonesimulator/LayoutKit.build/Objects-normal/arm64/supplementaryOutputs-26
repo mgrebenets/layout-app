@@ -1,0 +1,23 @@
+{
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Layout/DynamicGridLayout.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/DynamicGridLayout.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/DynamicGridLayout.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/DynamicGridLayout.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/DynamicGridLayout.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/DynamicGridLayout.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Layout/GridLayout.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/GridLayout.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/GridLayout.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/GridLayout.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/GridLayout.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/GridLayout.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Layout/Insets.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/Insets.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/Insets.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/Insets.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/Insets.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/arm64/Insets.swiftdeps"
+  }
+}

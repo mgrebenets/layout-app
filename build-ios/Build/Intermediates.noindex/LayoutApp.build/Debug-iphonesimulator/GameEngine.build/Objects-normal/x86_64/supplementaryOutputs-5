@@ -1,0 +1,23 @@
+{
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Cards/Rank.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/Rank.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/Rank.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/Rank.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/Rank.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/Rank.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Cards/StandardDeck.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardDeck.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardDeck.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardDeck.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardDeck.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardDeck.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Cards/StandardFace.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardFace.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardFace.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardFace.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardFace.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/StandardFace.swiftdeps"
+  }
+}

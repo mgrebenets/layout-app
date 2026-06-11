@@ -1,0 +1,23 @@
+{
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Layout/CollectionLayout.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayout.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayout.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayout.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayout.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayout.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Layout/CollectionLayoutDataSource.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayoutDataSource.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayoutDataSource.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayoutDataSource.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayoutDataSource.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/CollectionLayoutDataSource.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Layout/DiagonalLayout.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DiagonalLayout.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DiagonalLayout.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DiagonalLayout.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DiagonalLayout.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DiagonalLayout.swiftdeps"
+  }
+}

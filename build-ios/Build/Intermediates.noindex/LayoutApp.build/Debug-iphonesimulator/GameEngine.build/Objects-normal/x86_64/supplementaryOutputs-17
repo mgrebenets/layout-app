@@ -1,0 +1,23 @@
+{
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Games/Bura/BuraGame.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraGame.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraGame.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraGame.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraGame.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraGame.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Games/Bura/BuraRules.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraRules.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraRules.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraRules.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraRules.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/BuraRules.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Games/Durak/DurakAI.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/DurakAI.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/DurakAI.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/DurakAI.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/DurakAI.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/x86_64/DurakAI.swiftdeps"
+  }
+}

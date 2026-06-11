@@ -1,0 +1,23 @@
+{
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Core/Game.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/Game.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/Game.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/Game.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/Game.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/Game.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Core/GameDriver.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameDriver.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameDriver.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameDriver.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameDriver.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameDriver.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/GameEngine/Core/GameEffect.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameEffect.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameEffect.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameEffect.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameEffect.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/GameEngine.build/Objects-normal/arm64/GameEffect.swiftdeps"
+  }
+}

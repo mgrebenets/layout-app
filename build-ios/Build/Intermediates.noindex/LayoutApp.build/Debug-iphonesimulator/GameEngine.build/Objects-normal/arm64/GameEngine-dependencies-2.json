@@ -1,0 +1,276 @@
+[
+  {
+    "isFramework" : true,
+    "moduleName" : "Combine",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Combine-3ORFE3JMT707B.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "CoreFoundation",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/CoreFoundation-3J9GH5LF7FPJE.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Darwin",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Darwin-267ISUWANBG59.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Dispatch",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Dispatch-2QN9CPJZ1MWR8.swiftmodule"
+  },
+  {
+    "isFramework" : true,
+    "moduleName" : "Foundation",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Foundation-2ORQJFG6THOPI.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "ObjectiveC",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/ObjectiveC-ZYQAKHHPK13Z.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Observation",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Observation-37Z1M2G8YC2VZ.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Swift",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Swift-34GF7OJE9K9AS.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "SwiftOnoneSupport",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/SwiftOnoneSupport-E99Z9KLIXTBB.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "System",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/System-UDHXIV55RMHQ.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "XPC",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/XPC-XMK1YVWRO8AJ.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_Builtin_float",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_float-1I3DUY79HEOXL.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_Concurrency",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Concurrency-1BZ0PTOISARM7.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation1",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_DarwinFoundation1-H2K0I40NMRAI.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation2",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_DarwinFoundation2-3U2N6C8PDZD8P.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation3",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_DarwinFoundation3-XCWUX7Z5NM0N.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_StringProcessing",
+    "modulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_StringProcessing-3SAUGAOLUBDLE.swiftmodule"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/System\/Library\/Frameworks\/CFNetwork.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/CFNetwork-Q6MDYTRXB2MA3J7ZKQWZXPNY.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "CFNetwork"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/System\/Library\/Frameworks\/CoreFoundation.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/CoreFoundation-5RIJ9P37E3HZ3SOBXL8EJC7KS.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "CoreFoundation"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/Darwin.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Darwin-E79Y7QEGE0BTUHMZ35Z4UQ8TT.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Darwin"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/dispatch.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Dispatch-C9LWHETGGEC48KSJZP5ASVDSV.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Dispatch"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/System\/Library\/Frameworks\/Foundation.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Foundation-74IR7HCX6K1F101MVD9N6QASV.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Foundation"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/ObjectiveC.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/ObjectiveC-DP242V30PSNXCS3W5V4WXXTMA.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ObjectiveC"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/System\/Library\/Frameworks\/Security.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/Security-18MC0OLPE7TPTIDOC0UZ0Z2Q5.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Security"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/lib\/swift\/shims\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/SwiftShims-6VP9ACB6O47RFP2QEDKJUIBFZ.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "SwiftShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/xpc.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/XPC-CV3EMNP38SDDJEH42MJRVWFYE.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "XPC"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/DarwinFoundation1.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_AvailabilityInternal-1VIT3NG3PYFHF9YKL6FAHDEPN.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_AvailabilityInternal"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_float-9LM9JDE2ABE253ZNSSG7TMA9J.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_float"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_inttypes-A22Z7A3SS3L711NDH3MP9S3U1.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_inttypes"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_limits-4Y9Q1FCHULP85TH3BG79DEH0I.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_limits"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_stdarg-8Y112HIBI84RARDPI17KC2AL2.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdarg"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_stdbool-5HRBNKFJV8H130VYE66F319E0.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdbool"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_stddef-53Y8H622MYJUMNTQ8D42J3SYN.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stddef"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_Builtin_stdint-DECIVRR86TDYE8KYZALC03Y12.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdint"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/DarwinFoundation1.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_DarwinFoundation1-APE4OQDOG9KFF3GS4MX6871BH.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation1"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/DarwinFoundation2.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_DarwinFoundation2-2CPZ144OENXZY0KULEK7A75W4.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation2"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/DarwinFoundation3.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_DarwinFoundation3-CNX5IYJ1554K7PX12WJXNJZXV.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation3"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/lib\/swift\/shims\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/_SwiftConcurrencyShims-EFD7WMMCI7QCKGMROR6PXOT0S.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_SwiftConcurrencyShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/os.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/os_object-7643XPWCAF1NX9AKWCCSHDG9K.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "os_object"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/os.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/os_workgroup-DOY487PX0ZUA9DR4TR5IESNM2.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "os_workgroup"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/ptrauth-5QJMMNNQ8G1KMCOCD9773A3J.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ptrauth"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/ptrcheck-6JVCVDJ5HS5PGJEGM9BEI7SYZ.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ptrcheck"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/c_standard_library.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/string_h-4YAG3NGFSTBRU0RECW77VLBC0.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "string_h"
+  },
+  {
+    "clangModuleMapPath" : "\/Applications\/Xcode-Rizz.app\/Contents\/Developer\/Platforms\/iPhoneSimulator.platform\/Developer\/SDKs\/iPhoneSimulator27.0.sdk\/usr\/include\/DarwinFoundation2.modulemap",
+    "clangModulePath" : "\/Users\/max_grebenets\/i4napps\/kartoteka\/layout-app\/build-ios\/ModuleCache.noindex\/sys_types-CMVRYXE87BRFJICWW6TZJUU5F.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "sys_types"
+  }
+]

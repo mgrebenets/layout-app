@@ -1,0 +1,169 @@
+{
+  "" : {
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutApp macOS-primary.dia",
+    "emit-module-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutApp macOS-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutApp macOS-primary-emit-module.dia",
+    "pch" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutApp macOS-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutApp macOS-primary.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp Shared/ContextMenus/CenterGridLayoutMenu.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CenterGridLayoutMenu~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp Shared/ContextMenus/CircularLayoutMenu.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/CircularLayoutMenu~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp Shared/ContextMenus/DiagonalLayoutMenu.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DiagonalLayoutMenu~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp Shared/ContextMenus/DynamicGridLayoutMenu.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DynamicGridLayoutMenu~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp Shared/ContextMenus/StackLayoutMenu.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/StackLayoutMenu~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/BuraScene.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/BuraScene~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/DurakScene.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/DurakScene~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/LandingPageView.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LandingPageView~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/LayoutAppMain.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutAppMain~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/LayoutConfigurations.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutConfigurations~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/LayoutScenarioScene.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/LayoutScenarioScene~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/Scenario.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/Scenario~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/SolitaireHostView.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireHostView~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/SolitaireScene.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/SolitaireScene~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp macOS/WarScene.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/WarScene~partial.swiftmodule"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutApp macOS.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

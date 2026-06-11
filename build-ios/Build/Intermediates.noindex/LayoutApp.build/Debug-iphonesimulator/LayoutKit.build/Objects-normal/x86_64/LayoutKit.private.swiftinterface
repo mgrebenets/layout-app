@@ -1,0 +1,384 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.4 effective-5.10 (swiftlang-6.4.0.22.4 clang-2100.3.22.1)
+// swift-module-flags: -target x86_64-apple-ios26.1-simulator -enable-objc-interop -enable-library-evolution -language-mode 5 -Onone -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name LayoutKit
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.4
+import CoreGraphics
+import Foundation
+import SpriteKit
+import Swift
+import Synchronization
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public class DefaultNodeCoordinatorDelegate : LayoutKit::NodeCoordinatorDelegate {
+  public init()
+  public func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, canTrackNode node: any LayoutKit::LayoutableNode, inCollection sourceCollection: LayoutKit::SKCollectionNode) -> Swift::Bool
+  public func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, canMoveNode node: any LayoutKit::LayoutableNode, from sourceCollection: LayoutKit::SKCollectionNode, to targetCollection: LayoutKit::SKCollectionNode) -> Swift::Bool
+  public func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, trackingTransformationFor node: any LayoutKit::LayoutableNode) -> ((SpriteKit::SKNode) -> Swift::Void)?
+  public func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, resetTransformationFor node: any LayoutKit::LayoutableNode) -> ((SpriteKit::SKNode) -> Swift::Void)?
+  @objc deinit
+}
+public class NodeCoordinator {
+  weak public var delegate: (any LayoutKit::NodeCoordinatorDelegate)?
+  public init()
+  public func register(collection: LayoutKit::SKCollectionNode)
+  public func unregister(collection: LayoutKit::SKCollectionNode)
+  public func unregisterAll()
+  public var isTracking: Swift::Bool {
+    get
+  }
+  public func setParentContainer(_ container: SpriteKit::SKNode)
+  public func handleTouchBegan(at point: CoreFoundation::CGPoint, in scene: SpriteKit::SKScene)
+  public func handleTouchMoved(to point: CoreFoundation::CGPoint)
+  public func handleTouchEnded(at point: CoreFoundation::CGPoint)
+  @objc deinit
+}
+public protocol NodeCoordinatorDelegate : AnyObject {
+  func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, canTrackNode node: any LayoutKit::LayoutableNode, inCollection sourceCollection: LayoutKit::SKCollectionNode) -> Swift::Bool
+  func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, canMoveNode node: any LayoutKit::LayoutableNode, from sourceCollection: LayoutKit::SKCollectionNode, to targetCollection: LayoutKit::SKCollectionNode) -> Swift::Bool
+  func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, trackingTransformationFor node: any LayoutKit::LayoutableNode) -> ((SpriteKit::SKNode) -> Swift::Void)?
+  func nodeCoordinator(_ coordinator: LayoutKit::NodeCoordinator, resetTransformationFor node: any LayoutKit::LayoutableNode) -> ((SpriteKit::SKNode) -> Swift::Void)?
+}
+public enum Alignment : Swift::Sendable, Swift::Hashable {
+  case leading
+  case center
+  case trailing
+  public static func == (a: LayoutKit::Alignment, b: LayoutKit::Alignment) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers final public class CachedLayout<Strategy> : LayoutKit::CollectionLayout where Strategy : LayoutKit::LayoutStrategy {
+  final public let dataSource: any LayoutKit::CollectionLayoutDataSource
+  final public func invalidateLayout()
+  final public func layoutAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext) -> LayoutKit::LayoutAttributes?
+  final public func layoutAttributes(in context: LayoutKit::LayoutContext) -> [LayoutKit::LayoutAttributes]
+  final public func contentSize(in context: LayoutKit::LayoutContext) -> CoreFoundation::CGSize
+  @objc deinit
+}
+public typealias CircularLayout = LayoutKit::CachedLayout<LayoutKit::CircularLayoutStrategy>
+public struct CircularLayoutStrategy : LayoutKit::LayoutStrategy {
+  public init(itemSizing: LayoutKit::RelativeSizing? = nil, itemSize: CoreFoundation::CGSize = CGSize(width: 60, height: 60), radius: CoreFoundation::CGFloat? = nil, startAnglePercentage: CoreFoundation::CGFloat = 0.0, radiusGapPercentage: CoreFoundation::CGFloat = 0.0, zOrder: LayoutKit::ZOrder = .ascending)
+  public func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  public func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+extension LayoutKit::CachedLayout where Strategy == LayoutKit::CircularLayoutStrategy {
+  convenience public init(itemSizing: LayoutKit::RelativeSizing? = nil, itemSize: CoreFoundation::CGSize = CGSize(width: 60, height: 60), radius: CoreFoundation::CGFloat? = nil, startAnglePercentage: CoreFoundation::CGFloat = 0.0, radiusGapPercentage: CoreFoundation::CGFloat = 0.0, zOrder: LayoutKit::ZOrder = .ascending, dataSource: any LayoutKit::CollectionLayoutDataSource)
+}
+public protocol CollectionLayout : AnyObject, Swift::Sendable {
+  var dataSource: any LayoutKit::CollectionLayoutDataSource { get }
+  func invalidateLayout()
+  func layoutAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext) -> LayoutKit::LayoutAttributes?
+  func layoutAttributes(in context: LayoutKit::LayoutContext) -> [LayoutKit::LayoutAttributes]
+  func contentSize(in context: LayoutKit::LayoutContext) -> CoreFoundation::CGSize
+}
+public protocol CollectionLayoutDataSource : Swift::Sendable {
+  var numberOfItems: Swift::Int { get }
+}
+public typealias DiagonalLayout = LayoutKit::CachedLayout<LayoutKit::DiagonalLayoutStrategy>
+public struct DiagonalLayoutStrategy : LayoutKit::LayoutStrategy {
+  public init(itemSizing: LayoutKit::RelativeSizing? = nil, horizontalGapPercentage: CoreFoundation::CGFloat = 0.0, verticalGapPercentage: CoreFoundation::CGFloat = 0.0, horizontalAlignment: LayoutKit::Alignment = .leading, verticalAlignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending)
+  public func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  public func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+extension LayoutKit::CachedLayout where Strategy == LayoutKit::DiagonalLayoutStrategy {
+  convenience public init(itemSizing: LayoutKit::RelativeSizing? = nil, horizontalGapPercentage: CoreFoundation::CGFloat = 0.0, verticalGapPercentage: CoreFoundation::CGFloat = 0.0, horizontalAlignment: LayoutKit::Alignment = .leading, verticalAlignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending, dataSource: any LayoutKit::CollectionLayoutDataSource)
+}
+public typealias DynamicGridLayout = LayoutKit::CachedLayout<LayoutKit::DynamicGridLayoutStrategy>
+public struct DynamicGridLayoutStrategy : LayoutKit::LayoutStrategy {
+  public init(itemSizing: LayoutKit::RelativeSizing, horizontalGapPercentage: CoreFoundation::CGFloat = 1.0, verticalGapPercentage: CoreFoundation::CGFloat = 1.0, horizontalAlignment: LayoutKit::Alignment = .leading, verticalAlignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending)
+  public func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  public func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+extension LayoutKit::CachedLayout where Strategy == LayoutKit::DynamicGridLayoutStrategy {
+  convenience public init(itemSizing: LayoutKit::RelativeSizing, horizontalGapPercentage: CoreFoundation::CGFloat = 1.0, verticalGapPercentage: CoreFoundation::CGFloat = 1.0, horizontalAlignment: LayoutKit::Alignment = .leading, verticalAlignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending, dataSource: any LayoutKit::CollectionLayoutDataSource)
+}
+public typealias GridLayout = LayoutKit::CachedLayout<LayoutKit::GridLayoutStrategy>
+public struct GridLayoutStrategy : LayoutKit::LayoutStrategy {
+  public init(rows: Swift::Int, columns: Swift::Int, itemSizing: LayoutKit::RelativeSizing? = nil, horizontalGapPercentage: CoreFoundation::CGFloat = 1.0, verticalGapPercentage: CoreFoundation::CGFloat = 1.0, horizontalAlignment: LayoutKit::Alignment = .leading, verticalAlignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending)
+  public func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  public func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+extension LayoutKit::CachedLayout where Strategy == LayoutKit::GridLayoutStrategy {
+  convenience public init(rows: Swift::Int, columns: Swift::Int, itemSizing: LayoutKit::RelativeSizing? = nil, horizontalGapPercentage: CoreFoundation::CGFloat = 1.0, verticalGapPercentage: CoreFoundation::CGFloat = 1.0, horizontalAlignment: LayoutKit::Alignment = .leading, verticalAlignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending, dataSource: any LayoutKit::CollectionLayoutDataSource)
+}
+public struct Insets : Swift::Hashable, Swift::Sendable {
+  public init(top: CoreFoundation::CGFloat, left: CoreFoundation::CGFloat, bottom: CoreFoundation::CGFloat, right: CoreFoundation::CGFloat)
+  public init(uniform: CoreFoundation::CGFloat)
+  public init(horizontal: CoreFoundation::CGFloat, vertical: CoreFoundation::CGFloat)
+  public static func == (a: LayoutKit::Insets, b: LayoutKit::Insets) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public struct LayoutAttributes : Swift::Hashable, Swift::Sendable {
+  public var index: Swift::Int
+  public var frame: CoreFoundation::CGRect
+  public var zIndex: Swift::Int
+  public init(index: Swift::Int, frame: CoreFoundation::CGRect, zIndex: Swift::Int = 0)
+  public var center: CoreFoundation::CGPoint {
+    get
+  }
+  public var size: CoreFoundation::CGSize {
+    get
+  }
+  public static func == (a: LayoutKit::LayoutAttributes, b: LayoutKit::LayoutAttributes) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public struct LayoutContext : Swift::Hashable, Swift::Sendable {
+  public var contentRect: CoreFoundation::CGRect {
+    get
+  }
+  public init(bounds: CoreFoundation::CGRect, contentInsets: LayoutKit::Insets)
+  public static func == (a: LayoutKit::LayoutContext, b: LayoutKit::LayoutContext) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public protocol LayoutStrategy : Swift::Sendable {
+  func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  func computeAllAttributes(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> [LayoutKit::LayoutAttributes]
+  func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+extension LayoutKit::LayoutStrategy {
+  public func computeAllAttributes(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> [LayoutKit::LayoutAttributes]
+  public func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+public struct RelativeSizing : Swift::Sendable, Swift::Hashable {
+  public enum DimensionSpec : Swift::Sendable, Swift::Hashable {
+    case containerWidth(percentage: CoreFoundation::CGFloat)
+    case containerHeight(percentage: CoreFoundation::CGFloat)
+    case containerSmallest(percentage: CoreFoundation::CGFloat)
+    case containerLargest(percentage: CoreFoundation::CGFloat)
+    case itemWidth(percentage: CoreFoundation::CGFloat)
+    case itemHeight(percentage: CoreFoundation::CGFloat)
+    public static func == (a: LayoutKit::RelativeSizing.LayoutKit::DimensionSpec, b: LayoutKit::RelativeSizing.LayoutKit::DimensionSpec) -> Swift::Bool
+    public func hash(into hasher: inout Swift::Hasher)
+    public var hashValue: Swift::Int {
+      get
+    }
+  }
+  public var widthSpec: LayoutKit::RelativeSizing.LayoutKit::DimensionSpec
+  public var heightSpec: LayoutKit::RelativeSizing.LayoutKit::DimensionSpec
+  public init(widthSpec: LayoutKit::RelativeSizing.LayoutKit::DimensionSpec, heightSpec: LayoutKit::RelativeSizing.LayoutKit::DimensionSpec)
+  public init(baseDimension: LayoutKit::RelativeSizing.LayoutKit::BaseDimension, containerPercentage: CoreFoundation::CGFloat = 1.0, aspectRatio: CoreFoundation::CGFloat)
+  public func size(for containerSize: CoreFoundation::CGSize) -> CoreFoundation::CGSize
+  public enum BaseDimension : Swift::Sendable, Swift::Hashable {
+    case width
+    case height
+    case smallest
+    case largest
+    public static func == (a: LayoutKit::RelativeSizing.LayoutKit::BaseDimension, b: LayoutKit::RelativeSizing.LayoutKit::BaseDimension) -> Swift::Bool
+    public func hash(into hasher: inout Swift::Hasher)
+    public var hashValue: Swift::Int {
+      get
+    }
+  }
+  public var containerPercentage: CoreFoundation::CGFloat {
+    get
+  }
+  public var aspectRatio: CoreFoundation::CGFloat {
+    get
+  }
+  public var baseDimension: LayoutKit::RelativeSizing.LayoutKit::BaseDimension {
+    get
+  }
+  public static func == (a: LayoutKit::RelativeSizing, b: LayoutKit::RelativeSizing) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public typealias StackLayout = LayoutKit::CachedLayout<LayoutKit::StackLayoutStrategy>
+public enum LayoutAxis : Swift::Sendable, Swift::Hashable {
+  case horizontal
+  case vertical
+  public static func == (a: LayoutKit::LayoutAxis, b: LayoutKit::LayoutAxis) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public struct StackLayoutStrategy : LayoutKit::LayoutStrategy {
+  public init(axis: LayoutKit::LayoutAxis, itemSizing: LayoutKit::RelativeSizing? = nil, itemSpacing: CoreFoundation::CGFloat = 8, gapPercentage: CoreFoundation::CGFloat = 0.0, alignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending)
+  public func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  public func computeContentSize(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> CoreFoundation::CGSize
+}
+extension LayoutKit::CachedLayout where Strategy == LayoutKit::StackLayoutStrategy {
+  convenience public init(axis: LayoutKit::LayoutAxis, itemSizing: LayoutKit::RelativeSizing? = nil, itemSpacing: CoreFoundation::CGFloat = 8, gapPercentage: CoreFoundation::CGFloat = 0.0, alignment: LayoutKit::Alignment = .leading, zOrder: LayoutKit::ZOrder = .ascending, dataSource: any LayoutKit::CollectionLayoutDataSource)
+}
+public typealias WaterfallLayout = LayoutKit::CachedLayout<LayoutKit::WaterfallLayoutStrategy>
+public struct WaterfallLayoutStrategy : LayoutKit::LayoutStrategy {
+  public init(columns: Swift::Int = 2, itemSpacing: CoreFoundation::CGFloat = 8, lineSpacing: CoreFoundation::CGFloat = 8, itemSizing: LayoutKit::RelativeSizing? = nil, itemHeightProvider: (@Sendable (CoreFoundation::CGFloat, Swift::Int) -> CoreFoundation::CGFloat)? = nil)
+  public func computeAttributes(for index: Swift::Int, in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> LayoutKit::LayoutAttributes?
+  public func computeAllAttributes(in context: LayoutKit::LayoutContext, itemCount: Swift::Int) -> [LayoutKit::LayoutAttributes]
+}
+extension LayoutKit::CachedLayout where Strategy == LayoutKit::WaterfallLayoutStrategy {
+  convenience public init(columns: Swift::Int = 2, itemSpacing: CoreFoundation::CGFloat = 8, lineSpacing: CoreFoundation::CGFloat = 8, itemSizing: LayoutKit::RelativeSizing? = nil, itemHeightProvider: (@Sendable (CoreFoundation::CGFloat, Swift::Int) -> CoreFoundation::CGFloat)? = nil, dataSource: any LayoutKit::CollectionLayoutDataSource)
+}
+public enum ZOrder : Swift::Sendable, Swift::Hashable {
+  case ascending
+  case descending
+  public static func == (a: LayoutKit::ZOrder, b: LayoutKit::ZOrder) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public enum CardMetrics {
+  public static let aspect: CoreFoundation::CGFloat
+  public static func fit(maxWidth: CoreFoundation::CGFloat, maxHeight: CoreFoundation::CGFloat) -> CoreFoundation::CGSize
+}
+public struct CardFaceView : Swift::Equatable {
+  public var text: Swift::String
+  public var isRed: Swift::Bool
+  public init(text: Swift::String, isRed: Swift::Bool)
+  public static func == (a: LayoutKit::CardFaceView, b: LayoutKit::CardFaceView) -> Swift::Bool
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency::MainActor @preconcurrency final public class CardNode : SpriteKit::SKNode {
+  @_Concurrency::MainActor @preconcurrency final public var faceUp: Swift::Bool {
+    get
+  }
+  @_Concurrency::MainActor @preconcurrency @objc override dynamic public init()
+  @_Concurrency::MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation::NSCoder)
+  @_Concurrency::MainActor @preconcurrency final public func configure(size: CoreFoundation::CGSize)
+  @_Concurrency::MainActor @preconcurrency final public func setFace(_ face: LayoutKit::CardFaceView?, faceUp: Swift::Bool)
+  @_Concurrency::MainActor @preconcurrency final public func setHighlighted(_ on: Swift::Bool)
+  @_Concurrency::MainActor @preconcurrency final public func setSelected(_ on: Swift::Bool, duration: Foundation::TimeInterval)
+  @_Concurrency::MainActor @preconcurrency final public func setLayer(_ base: CoreFoundation::CGFloat)
+  @_Concurrency::MainActor @preconcurrency final public func flip(to faceUp: Swift::Bool, face: LayoutKit::CardFaceView?, duration: Foundation::TimeInterval)
+  @objc deinit
+}
+public struct CardPlacement : Swift::Equatable {
+  public var position: CoreFoundation::CGPoint
+  public var zRotation: CoreFoundation::CGFloat
+  public var zPosition: CoreFoundation::CGFloat
+  public var size: CoreFoundation::CGSize
+  public var faceUp: Swift::Bool
+  public var highlighted: Swift::Bool
+  public var selected: Swift::Bool
+  public init(position: CoreFoundation::CGPoint, zRotation: CoreFoundation::CGFloat = 0, zPosition: CoreFoundation::CGFloat = 0, size: CoreFoundation::CGSize = CGSize(width: 80, height: 112), faceUp: Swift::Bool = false, highlighted: Swift::Bool = false, selected: Swift::Bool = false)
+  public static func == (a: LayoutKit::CardPlacement, b: LayoutKit::CardPlacement) -> Swift::Bool
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency::MainActor @preconcurrency final public class CardTableNode : SpriteKit::SKNode {
+  @_Concurrency::MainActor @preconcurrency final public var faceProvider: (Swift::Int) -> LayoutKit::CardFaceView?
+  @_Concurrency::MainActor @preconcurrency @objc override dynamic public init()
+  @_Concurrency::MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation::NSCoder)
+  @_Concurrency::MainActor @preconcurrency final public func reset()
+  @_Concurrency::MainActor @preconcurrency final public func node(_ id: Swift::Int) -> LayoutKit::CardNode?
+  @_Concurrency::MainActor @preconcurrency final public func apply(_ placements: [Swift::Int : LayoutKit::CardPlacement], duration: Foundation::TimeInterval, completion: @escaping () -> Swift::Void)
+  @objc deinit
+}
+public protocol CollectionNode : LayoutKit::LayoutableNode {
+  var layout: (any LayoutKit::CollectionLayout)! { get set }
+  var layoutableChildren: [any LayoutKit::LayoutableNode] { get }
+  func addLayoutableChild(_ child: any LayoutKit::LayoutableNode)
+  func removeLayoutableChild(_ child: any LayoutKit::LayoutableNode)
+  func invalidateLayout()
+  func layoutIfNeeded()
+  func forceLayout()
+}
+public protocol LayoutableNode : AnyObject {
+  var layoutFrame: CoreFoundation::CGRect { get set }
+  var layoutZIndex: Swift::Int { get set }
+  var layoutDelegate: (any LayoutKit::LayoutableNodeDelegate)? { get set }
+}
+public protocol LayoutableNodeDelegate : AnyObject {
+  func nodeDidInvalidateLayout(_ node: any LayoutKit::LayoutableNode)
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency::MainActor @preconcurrency public class LayoutableSKShapeNode : SpriteKit::SKShapeNode, LayoutKit::LayoutableNode, LayoutKit::ReusableNode {
+  @_Concurrency::MainActor @preconcurrency public var layoutFrame: CoreFoundation::CGRect {
+    get
+    set
+  }
+  @_Concurrency::MainActor @preconcurrency public var layoutZIndex: Swift::Int
+  @_Concurrency::MainActor @preconcurrency weak public var layoutDelegate: (any LayoutKit::LayoutableNodeDelegate)?
+  @_Concurrency::MainActor @preconcurrency public var reuseIdentifier: Swift::String {
+    get
+  }
+  @_Concurrency::MainActor @preconcurrency public func prepareForReuse()
+  @_Concurrency::MainActor @preconcurrency @objc override dynamic public init()
+  @_Concurrency::MainActor @preconcurrency @objc required dynamic public init?(coder aDecoder: Foundation::NSCoder)
+  @objc deinit
+}
+@_Concurrency::MainActor final public class NodePool {
+  @_Concurrency::MainActor public init(maxPoolSize: Swift::Int = 20)
+  @_Concurrency::MainActor final public func dequeueReusableNode<T>(withIdentifier identifier: Swift::String, create: () -> T) -> T where T : LayoutKit::ReusableNode
+  @_Concurrency::MainActor final public func enqueueForReuse(_ node: any LayoutKit::ReusableNode)
+  @_Concurrency::MainActor final public func enqueueForReuse(_ nodes: [any LayoutKit::ReusableNode])
+  @_Concurrency::MainActor final public func clear()
+  @_Concurrency::MainActor final public func clear(identifier: Swift::String)
+  @_Concurrency::MainActor final public func poolSize(for identifier: Swift::String) -> Swift::Int
+  @_Concurrency::MainActor final public var totalPooledNodes: Swift::Int {
+    get
+  }
+  @_Concurrency::MainActor final public var statistics: LayoutKit::PoolStatistics {
+    get
+  }
+  @_Concurrency::MainActor final public func resetStatistics()
+  @objc deinit
+}
+public struct PoolStatistics {
+  public let totalCreated: Swift::Int
+  public let totalReused: Swift::Int
+  public let currentPoolSize: Swift::Int
+  public let reuseRate: Swift::Double
+  public var totalRequests: Swift::Int {
+    get
+  }
+}
+public protocol ReusableNode : LayoutKit::LayoutableNode {
+  var reuseIdentifier: Swift::String { get }
+  func prepareForReuse()
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency::MainActor @preconcurrency public class SKCollectionNode : SpriteKit::SKNode, LayoutKit::CollectionNode, LayoutKit::CollectionLayoutDataSource, LayoutKit::LayoutableNodeDelegate {
+  @_Concurrency::MainActor @preconcurrency public var layout: (any LayoutKit::CollectionLayout)! {
+    get
+    set
+  }
+  @_Concurrency::MainActor @preconcurrency public var layoutableChildren: [any LayoutKit::LayoutableNode] {
+    get
+  }
+  @_Concurrency::MainActor @preconcurrency public var layoutFrame: CoreFoundation::CGRect {
+    get
+    set
+  }
+  @_Concurrency::MainActor @preconcurrency public var layoutZIndex: Swift::Int {
+    get
+    set
+  }
+  @_Concurrency::MainActor @preconcurrency weak public var layoutDelegate: (any LayoutKit::LayoutableNodeDelegate)?
+  @_Concurrency::MainActor @preconcurrency public var numberOfItems: Swift::Int {
+    get
+  }
+  @_Concurrency::MainActor @preconcurrency public var nodePool: LayoutKit::NodePool?
+  @_Concurrency::MainActor @preconcurrency public var debugBorderColor: SpriteKit::SKColor? {
+    get
+    set
+  }
+  @_Concurrency::MainActor @preconcurrency public var debugBorderWidth: CoreFoundation::CGFloat {
+    get
+    set
+  }
+  @_Concurrency::MainActor @preconcurrency public init(layoutBuilder: (LayoutKit::SKCollectionNode) -> any LayoutKit::CollectionLayout, contentInsets: LayoutKit::Insets = Insets(uniform: 0))
+  @_Concurrency::MainActor @preconcurrency public func addLayoutableChild(_ child: any LayoutKit::LayoutableNode)
+  @_Concurrency::MainActor @preconcurrency public func removeLayoutableChild(_ child: any LayoutKit::LayoutableNode)
+  @_Concurrency::MainActor @preconcurrency public func removeLayoutableChildWithIndex(_ child: any LayoutKit::LayoutableNode) -> Swift::Int?
+  @_Concurrency::MainActor @preconcurrency public func insertLayoutableChild(_ child: any LayoutKit::LayoutableNode, at index: Swift::Int)
+  @_Concurrency::MainActor @preconcurrency public func layoutableNode(at point: CoreFoundation::CGPoint) -> (any LayoutKit::LayoutableNode)?
+  @_Concurrency::MainActor @preconcurrency public func invalidateLayout()
+  @_Concurrency::MainActor @preconcurrency public func layoutIfNeeded()
+  @_Concurrency::MainActor @preconcurrency public func forceLayout()
+  @_Concurrency::MainActor @preconcurrency public func dequeueReusableNode<T>(withIdentifier identifier: Swift::String, create: () -> T) async -> T where T : LayoutKit::ReusableNode
+  @_Concurrency::MainActor @preconcurrency public func recycleAllChildren() async
+  @_Concurrency::MainActor @preconcurrency public func recycleChildren(_ children: [any LayoutKit::LayoutableNode]) async
+  @_Concurrency::MainActor @preconcurrency public func nodeDidInvalidateLayout(_ node: any LayoutKit::LayoutableNode)
+  @objc deinit
+}
+extension LayoutKit::NodePool : Swift::Sendable {}

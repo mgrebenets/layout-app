@@ -1,0 +1,23 @@
+{
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Coordination/DefaultNodeCoordinatorDelegate.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DefaultNodeCoordinatorDelegate.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DefaultNodeCoordinatorDelegate.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DefaultNodeCoordinatorDelegate.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DefaultNodeCoordinatorDelegate.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/DefaultNodeCoordinatorDelegate.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Coordination/NodeCoordinator.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinator.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinator.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinator.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinator.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinator.swiftdeps"
+  },
+  "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutKit/Coordination/NodeCoordinatorDelegate.swift" : {
+    "const-values" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinatorDelegate.swiftconstvalues",
+    "dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinatorDelegate.d",
+    "diagnostics" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinatorDelegate.dia",
+    "object" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinatorDelegate.o",
+    "swift-dependencies" : "/Users/max_grebenets/i4napps/kartoteka/layout-app/build-ios/Build/Intermediates.noindex/LayoutApp.build/Debug-iphonesimulator/LayoutKit.build/Objects-normal/x86_64/NodeCoordinatorDelegate.swiftdeps"
+  }
+}

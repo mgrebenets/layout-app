@@ -74,7 +74,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		89C5C54B2EA794BB009E10A6 /* Exceptions for "LayoutApp Shared" folder in "LayoutApp macOS" target */ = {
+		89C5C54B2EA794BB009E10A6 /* Exceptions for "LayoutApp Shared" folder in "LayoutApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Actions.sks,
@@ -86,7 +86,7 @@
 				ContextMenus/StackLayoutMenu.swift,
 				GameScene.sks,
 			);
-			target = 89C5C53B2EA794BB009E10A6 /* LayoutApp macOS */;
+			target = 89C5C53B2EA794BB009E10A6 /* LayoutApp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -94,14 +94,14 @@
 		89C5C5332EA794B9009E10A6 /* LayoutApp Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				89C5C54B2EA794BB009E10A6 /* Exceptions for "LayoutApp Shared" folder in "LayoutApp macOS" target */,
+				89C5C54B2EA794BB009E10A6 /* Exceptions for "LayoutApp Shared" folder in "LayoutApp" target */,
 			);
 			path = "LayoutApp Shared";
 			sourceTree = "<group>";
 		};
-		89C5C53E2EA794BB009E10A6 /* LayoutApp macOS */ = {
+		89C5C53E2EA794BB009E10A6 /* LayoutApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "LayoutApp macOS";
+			path = LayoutApp;
 			sourceTree = "<group>";
 		};
 		89DC71402F2F4D08000988B0 /* Dev */ = {
@@ -183,7 +183,7 @@
 				89EEC6DC2FCEB03800B72F0D /* GameEngine.xctestplan */,
 				89DC71402F2F4D08000988B0 /* Dev */,
 				89C5C5332EA794B9009E10A6 /* LayoutApp Shared */,
-				89C5C53E2EA794BB009E10A6 /* LayoutApp macOS */,
+				89C5C53E2EA794BB009E10A6 /* LayoutApp */,
 				89FE5E612ED854D900F298C6 /* LayoutKit */,
 				89FE5E702ED854DA00F298C6 /* LayoutKitTests */,
 				89EEC59B2FCD931100B72F0D /* GameEngine */,
@@ -232,9 +232,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		89C5C53B2EA794BB009E10A6 /* LayoutApp macOS */ = {
+		89C5C53B2EA794BB009E10A6 /* LayoutApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 89C5C54C2EA794BB009E10A6 /* Build configuration list for PBXNativeTarget "LayoutApp macOS" */;
+			buildConfigurationList = 89C5C54C2EA794BB009E10A6 /* Build configuration list for PBXNativeTarget "LayoutApp" */;
 			buildPhases = (
 				89C5C5382EA794BB009E10A6 /* Sources */,
 				89C5C5392EA794BB009E10A6 /* Frameworks */,
@@ -248,9 +248,9 @@
 				89EEC5AC2FCD931200B72F0D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				89C5C53E2EA794BB009E10A6 /* LayoutApp macOS */,
+				89C5C53E2EA794BB009E10A6 /* LayoutApp */,
 			);
-			name = "LayoutApp macOS";
+			name = LayoutApp;
 			packageProductDependencies = (
 			);
 			productName = "LayoutApp macOS";
@@ -397,7 +397,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				89C5C53B2EA794BB009E10A6 /* LayoutApp macOS */,
+				89C5C53B2EA794BB009E10A6 /* LayoutApp */,
 				89FE5E5F2ED854D900F298C6 /* LayoutKit */,
 				89FE5E692ED854DA00F298C6 /* LayoutKitTests */,
 				89EEC5992FCD931100B72F0D /* GameEngine */,
@@ -511,14 +511,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "LayoutApp macOS/LayoutApp_macOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = LayoutApp/LayoutApp_macOS.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				"INFOPLIST_KEY_NSMainStoryboardFile[sdk=macosx*]" = Main;
+				"INFOPLIST_KEY_NSPrincipalClass[sdk=macosx*]" = NSApplication;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -528,9 +531,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.layout.LayoutApp;
 				PRODUCT_NAME = LayoutApp;
 				REGISTER_APP_GROUPS = YES;
-				SDKROOT = macosx;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -539,14 +544,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "LayoutApp macOS/LayoutApp_macOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = LayoutApp/LayoutApp_macOS.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				"INFOPLIST_KEY_NSMainStoryboardFile[sdk=macosx*]" = Main;
+				"INFOPLIST_KEY_NSPrincipalClass[sdk=macosx*]" = NSApplication;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -556,9 +564,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.layout.LayoutApp;
 				PRODUCT_NAME = LayoutApp;
 				REGISTER_APP_GROUPS = YES;
-				SDKROOT = macosx;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -956,7 +966,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		89C5C54C2EA794BB009E10A6 /* Build configuration list for PBXNativeTarget "LayoutApp macOS" */ = {
+		89C5C54C2EA794BB009E10A6 /* Build configuration list for PBXNativeTarget "LayoutApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				89C5C54D2EA794BB009E10A6 /* Debug */,

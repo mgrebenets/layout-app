@@ -1,0 +1,376 @@
+{
+  "source": "/Users/max_grebenets/i4napps/kartoteka/layout-app/LayoutApp Shared/ContextMenus/CenterGridLayoutMenu.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Center Grid Layout",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rows",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "1",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "5",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "Columns",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "1",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "5",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Horizontal Alignment",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Leading",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Center",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "Trailing",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 162
+        }
+      },
+      {
+        "comment": "",
+        "key": "Vertical Alignment",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "Leading",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 177
+        }
+      },
+      {
+        "comment": "",
+        "key": "Center",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 183
+        }
+      },
+      {
+        "comment": "",
+        "key": "Trailing",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 189
+        }
+      },
+      {
+        "comment": "",
+        "key": "Z-Order",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ascending",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 204
+        }
+      },
+      {
+        "comment": "",
+        "key": "Descending",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 210
+        }
+      },
+      {
+        "comment": "",
+        "key": "Horizontal Gap",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "0.0",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 225
+        }
+      },
+      {
+        "comment": "",
+        "key": "3.0",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 234
+        }
+      },
+      {
+        "comment": "",
+        "key": "Vertical Gap",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 247
+        }
+      },
+      {
+        "comment": "",
+        "key": "0.0",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 251
+        }
+      },
+      {
+        "comment": "",
+        "key": "3.0",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 260
+        }
+      },
+      {
+        "comment": "",
+        "key": "Width Base Dimension",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "Width Percentage",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 288
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 276
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Width",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 277
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Height",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 278
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Smallest",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 279
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Largest",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 280
+        }
+      },
+      {
+        "comment": "",
+        "key": "Item Height",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 281
+        }
+      },
+      {
+        "comment": "",
+        "key": "0.1",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 293
+        }
+      },
+      {
+        "comment": "",
+        "key": "2.0",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 302
+        }
+      },
+      {
+        "comment": "",
+        "key": "Height Base Dimension",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 315
+        }
+      },
+      {
+        "comment": "",
+        "key": "Height Percentage",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 330
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 318
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Width",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 319
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Height",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 320
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Smallest",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 321
+        }
+      },
+      {
+        "comment": "",
+        "key": "Container Largest",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 322
+        }
+      },
+      {
+        "comment": "",
+        "key": "Item Width",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 323
+        }
+      },
+      {
+        "comment": "",
+        "key": "0.1",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 335
+        }
+      },
+      {
+        "comment": "",
+        "key": "2.0",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 344
+        }
+      }
+    ]
+  },
+  "version": 1
+}
