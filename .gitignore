@@ -36,3 +36,4 @@ thumbs.db
 *.tmp
 
 build_ios/
+build-ios/

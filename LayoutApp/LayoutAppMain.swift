@@ -12,7 +12,9 @@ struct LayoutApp: App {
     var body: some Scene {
         WindowGroup {
             LandingPageView()
-                .frame(minWidth: 800, minHeight: 600)
+                #if os(macOS)
+                .frame(minWidth: 800, minHeight: 600)  // window min size — macOS only; on iOS it would force an oversized root view
+                #endif
         }
         #if os(macOS)
         .defaultSize(width: 1200, height: 800)  // macOS/visionOS only

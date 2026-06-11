@@ -59,6 +59,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "89EEC5A12FCD931200B72F0D"
                BuildableName = "GameEngineTests.xctest"
+               BlueprintName = "GameEngineTests"
                ReferencedContainer = "container:LayoutApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
