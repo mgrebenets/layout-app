@@ -14,7 +14,7 @@ import SpriteKit
 import GameEngine
 import LayoutKit
 
-final class SolitaireScene: SKScene {
+final class SolitaireScene: PointerInputScene {
 
     private var rules = SolitaireRules()
     private var game = SolitaireGame()
@@ -182,10 +182,8 @@ final class SolitaireScene: SKScene {
 
     // MARK: - Input
 
-    #if os(macOS) // pointer input — iOS touch handling is a later step
-    override func mouseDown(with event: NSEvent) {
+    override func pointerDown(at point: CGPoint, tapCount: Int) {
         guard !busy else { return }
-        let point = event.location(in: self)
         let hit = nodes(at: point)
 
         if hit.contains(where: { $0.name == "ctrl_draw" }) {
@@ -208,9 +206,8 @@ final class SolitaireScene: SKScene {
         beginDrag(card, from: source, at: point)
     }
 
-    override func mouseDragged(with event: NSEvent) {
+    override func pointerMoved(to point: CGPoint) {
         guard !dragCards.isEmpty else { return }
-        let point = event.location(in: self)
         if hypot(point.x - dragStart.x, point.y - dragStart.y) > 6 { dragMoved = true }
         for value in dragCards {
             if let node = cardTable.node(value), let offset = dragOffsets[value] {
@@ -219,10 +216,9 @@ final class SolitaireScene: SKScene {
         }
     }
 
-    override func mouseUp(with event: NSEvent) {
+    override func pointerUp(at point: CGPoint) {
         guard !dragCards.isEmpty else { return }
         let head = CardID(dragCards[0])
-        let point = event.location(in: self)
         let moved = dragMoved
         dragCards = []; dragOffsets = [:]; dragMoved = false
 
@@ -237,7 +233,6 @@ final class SolitaireScene: SKScene {
             applyState(duration: 0.16) // snap back
         }
     }
-    #endif
 
     private func beginDrag(_ card: CardID, from source: ZoneID, at point: CGPoint) {
         if source.name == "tableau", let cards = state.core[source]?.cards, let i = cards.firstIndex(of: card) {

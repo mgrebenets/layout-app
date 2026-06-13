@@ -18,7 +18,7 @@ import SpriteKit
 import GameEngine
 import LayoutKit
 
-final class BuraScene: SKScene {
+final class BuraScene: PointerInputScene {
 
     private var rules = BuraRules()
     private var game = BuraGame()
@@ -177,12 +177,11 @@ final class BuraScene: SKScene {
 
     // MARK: - Input
 
-    #if os(macOS) // pointer input — iOS touch handling is a later step
-    override func mouseDown(with event: NSEvent) {
+    override func pointerDown(at point: CGPoint, tapCount: Int) {
         // A held beat (the opponent's answer shown on the table) resumes on any click.
         if let resume = awaitingTap { awaitingTap = nil; resume(); return }
 
-        let hit = nodes(at: event.location(in: self))
+        let hit = nodes(at: point)
 
         if hit.contains(where: { $0.name == "ctrl_target" }) {
             rules.winningScore = nextWinningScore(rules.winningScore)
@@ -210,13 +209,12 @@ final class BuraScene: SKScene {
         if hit.contains(where: { $0.name == "btn_commit" }) { commitSelection(); return }
         if hit.contains(where: { $0.name == "btn_clear" }) { selected = []; refreshInputLayer(); return }
         if let card = cardID(at: hit) {
-            handleCardClick(card, doubleClick: event.clickCount >= 2)
+            handleCardClick(card, doubleClick: tapCount >= 2)
         } else if !selected.isEmpty {
             selected = []
             refreshInputLayer()
         }
     }
-    #endif
 
     private func cardID(at hits: [SKNode]) -> CardID? {
         for hit in hits {

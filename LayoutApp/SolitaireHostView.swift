@@ -5,7 +5,7 @@
 //  SwiftUI host for the Solitaire scene. The SpriteKit scene stays platform-agnostic (it just renders and
 //  reports events); anything that needs native chrome — here, entering a seed — is presented in SwiftUI so
 //  it ports to iOS/iPadOS unchanged. The scene is held by a `@StateObject` so it survives body re-renders
-//  (toggling the alert must not re-deal the game), mirroring the `ContextMenuState` bridge used elsewhere.
+//  (toggling the alert must not re-deal the game).
 //
 
 import SwiftUI
@@ -36,7 +36,7 @@ struct SolitaireHostView: View {
     @StateObject private var host = SolitaireHost()
 
     var body: some View {
-        SpriteView(scene: host.scene)
+        GameSceneHost(scene: host.scene)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Solitaire")
             .alert("Deal a specific game", isPresented: $host.showSeedPrompt) {

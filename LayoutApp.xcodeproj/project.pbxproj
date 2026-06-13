@@ -79,11 +79,6 @@
 			membershipExceptions = (
 				Actions.sks,
 				Assets.xcassets,
-				ContextMenus/CenterGridLayoutMenu.swift,
-				ContextMenus/CircularLayoutMenu.swift,
-				ContextMenus/DiagonalLayoutMenu.swift,
-				ContextMenus/DynamicGridLayoutMenu.swift,
-				ContextMenus/StackLayoutMenu.swift,
 				GameScene.sks,
 			);
 			target = 89C5C53B2EA794BB009E10A6 /* LayoutApp */;

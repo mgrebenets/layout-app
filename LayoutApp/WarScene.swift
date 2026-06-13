@@ -1,24 +1,23 @@
 //
 //  WarScene.swift
-//  LayoutApp macOS
+//  LayoutApp
 //
 //  A playable War scene driven by GameEngine's WarGame. Every deal, comparison, war, and win comes
 //  from the engine; this scene renders state and feeds clicks back as the forced move.
 //
-//  - Rules are editable on the fly via two pills at the top (war face-down count 1–3, and
-//    fixed/shuffled winnings). Changing them rebuilds the WarGame with new rules; the in-progress
-//    game continues under them.
+//  - Rules are editable on the fly via three pills at the top (war face-down count 1–3, fixed/shuffled
+//    winnings, and whether a 2 beats an Ace). Changing them rebuilds the WarGame; the game continues.
 //  - The engine's `advance` steps one beat at a time, so wars are watchable: a tied pair lays its
 //    face-down + face-up cards, held on the table, and resolves on the next click.
-//  - Each played pile is an SKCollectionNode with a horizontal StackLayout, so the war cards fan
-//    out side by side instead of stacking.
+//  - Rendering uses the shared `CardTableNode`: each render is a full `state → placements` snapshot and
+//    cards glide between the stock and the played fan (the same model as Durak/Solitaire).
 //
 
 import SpriteKit
 import GameEngine
 import LayoutKit
 
-final class WarScene: SKScene {
+final class WarScene: PointerInputScene {
 
     private var rules = WarRules()
     private var game = WarGame()
@@ -30,10 +29,12 @@ final class WarScene: SKScene {
     private let seat0 = SeatID(0) // bottom — "You"
     private let seat1 = SeatID(1) // top — "Opponent"
 
-    private let tableNode = SKNode()
+    private let cardTable = CardTableNode()
+    private let labelsNode = SKNode()
     private let controlsNode = SKNode()
     private let statusLabel = SKLabelNode()
     private let hintLabel = SKLabelNode()
+    private var lastPlacements: [Int: CardPlacement] = [:]
 
     private func stock(_ seat: SeatID) -> ZoneID { ZoneID("stock", owner: seat) }
     private func played(_ seat: SeatID) -> ZoneID { ZoneID("played", owner: seat) }
@@ -45,12 +46,18 @@ final class WarScene: SKScene {
         backgroundColor = SKColor(red: 0.10, green: 0.35, blue: 0.18, alpha: 1.0)
         anchorPoint = .zero
 
-        addChild(tableNode)
-        addChild(controlsNode)
-        configure(statusLabel, size: 22, font: "AvenirNext-DemiBold")
-        configure(hintLabel, size: 14, font: "AvenirNext-Regular", alpha: 0.7)
+        addChild(cardTable)
+        for node in [labelsNode, controlsNode] { node.zPosition = 10_000; addChild(node) }
+        configure(statusLabel, size: 22, font: "AvenirNext-DemiBold"); statusLabel.zPosition = 10_000
+        configure(hintLabel, size: 14, font: "AvenirNext-Regular", alpha: 0.7); hintLabel.zPosition = 10_000
         addChild(statusLabel)
         addChild(hintLabel)
+
+        cardTable.faceProvider = { [weak self] id in
+            guard let self, let state = self.state else { return nil }
+            let face = state.registry.face(CardID(id))
+            return CardFaceView(text: face.description, isRed: face.suit.color == .red)
+        }
 
         startNewGame()
     }
@@ -58,28 +65,25 @@ final class WarScene: SKScene {
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         guard state != nil else { return }
-        render()
+        render(animated: false)
     }
 
     private func startNewGame() {
         game = WarGame(rules: rules)
         state = game.setup(seatCount: 2, seed: UInt64.random(in: UInt64.min...UInt64.max))
         phase = .awaitingPlay
-        render()
+        render(animated: false)
     }
 
     // MARK: - Input
 
-    #if os(macOS)
-    override func mouseDown(with event: NSEvent) {
-        let location = event.location(in: self)
-        let hit = nodes(at: location)
+    override func pointerDown(at point: CGPoint, tapCount: Int) {
+        let hit = nodes(at: point)
         if hit.contains(where: { $0.name == "ctrl_warcount" }) { cycleWarCount(); return }
         if hit.contains(where: { $0.name == "ctrl_shuffle" }) { toggleShuffle(); return }
         if hit.contains(where: { $0.name == "ctrl_twobeatsace" }) { toggleTwoBeatsAce(); return }
         step()
     }
-    #endif
 
     private func cycleWarCount() {
         rules.warFaceDownCount = rules.warFaceDownCount % 3 + 1 // 1 → 2 → 3 → 1
@@ -162,14 +166,25 @@ final class WarScene: SKScene {
         return p0 == p1 && p0 >= 1
     }
 
+    // MARK: - Geometry (responsive — cards scale with the window, via CardMetrics)
+
+    private var cardSize: CGSize { CardMetrics.fit(maxWidth: size.width * 0.08, maxHeight: size.height * 0.20) }
+    private func rowY(_ seat: SeatID) -> CGFloat { size.height * (seat == seat1 ? 0.66 : 0.32) }
+    private var stockX: CGFloat { size.width / 2 - size.width * 0.22 }
+    private var playedCenterX: CGFloat { size.width / 2 + size.width * 0.08 }
+    private var playedWidth: CGFloat { size.width * 0.42 }
+
     // MARK: - Rendering
 
-    private func render() {
-        tableNode.removeAllChildren()
+    private func render(animated: Bool = true) {
+        labelsNode.removeAllChildren()
         controlsNode.removeAllChildren()
 
-        drawSeat(seat1, name: "Opponent", rowY: size.height * 0.70)
-        drawSeat(seat0, name: "You", rowY: size.height * 0.30)
+        lastPlacements = placements(for: state)
+        cardTable.apply(lastPlacements, duration: animated ? 0.2 : 0) {}
+
+        drawSeatLabels(seat1, name: "Opponent")
+        drawSeatLabels(seat0, name: "You")
 
         statusLabel.position = CGPoint(x: size.width / 2, y: size.height / 2)
         statusLabel.text = statusText()
@@ -187,73 +202,37 @@ final class WarScene: SKScene {
                                           at: CGPoint(x: size.width / 2 + 200, y: size.height - 30)))
     }
 
-    private func drawSeat(_ seat: SeatID, name: String, rowY: CGFloat) {
-        let centerX = size.width / 2
-        let stockX = centerX - 210
-        let playedCenterX = centerX + 70
-        let playedWidth = size.width * 0.42
-
-        let stockCount = state.core[stock(seat)]?.count ?? 0
-        if stockCount > 0 {
-            let back = makeCardNode(face: nil, faceUp: false)
-            back.layoutFrame = CGRect(x: 0, y: 0, width: 86, height: 120)
-            back.position = CGPoint(x: stockX, y: rowY)
-            tableNode.addChild(back)
+    /// Stock stacks face-down at the seat's stock spot; the played pile fans out horizontally (overlapping
+    /// once it grows past a few cards). Cards keep their ids, so a play glides from stock into the fan.
+    private func placements(for s: WarState) -> [Int: CardPlacement] {
+        var p: [Int: CardPlacement] = [:]
+        let cs = cardSize
+        for seat in [seat0, seat1] {
+            let y = rowY(seat)
+            for (i, card) in (s.core[stock(seat)]?.cards ?? []).enumerated() {
+                p[card.value] = CardPlacement(position: CGPoint(x: stockX, y: y),
+                                              zPosition: CGFloat(i), size: cs, faceUp: false)
+            }
+            let pile = s.core[played(seat)]?.cards ?? []
+            guard !pile.isEmpty else { continue }
+            let overlap = pile.count > 3
+            let desired = cs.width * (overlap ? 0.62 : 1.16)
+            let step = pile.count > 1 ? min(desired, (playedWidth - cs.width) / CGFloat(pile.count - 1)) : 0
+            let startX = playedCenterX - step * CGFloat(pile.count - 1) / 2
+            for (i, card) in pile.enumerated() {
+                p[card.value] = CardPlacement(position: CGPoint(x: startX + step * CGFloat(i), y: y),
+                                              zPosition: 1000 + CGFloat(i), size: cs,
+                                              faceUp: s.core.faceUp.contains(card))
+            }
         }
-        tableNode.addChild(textLabel("Stock: \(stockCount)", x: stockX, y: rowY - 82, size: 14))
-        tableNode.addChild(textLabel(name, x: stockX, y: rowY + 82, size: 16, bold: true))
-
-        let pile = playedPileCollection(for: seat, width: playedWidth)
-        pile.position = CGPoint(x: playedCenterX, y: rowY)
-        tableNode.addChild(pile)
+        return p
     }
 
-    /// A played pile rendered as a horizontal fan via SKCollectionNode + StackLayout.
-    private func playedPileCollection(for seat: SeatID, width: CGFloat) -> SKCollectionNode {
-        let cards = state.core[played(seat)]?.cards ?? []
-        let overlap = cards.count > 3
-        let collection = SKCollectionNode(layoutBuilder: { node in
-            StackLayout(
-                axis: .horizontal,
-                itemSizing: RelativeSizing(
-                    widthSpec: .containerHeight(percentage: 0.72),
-                    heightSpec: .containerHeight(percentage: 0.95)
-                ),
-                gapPercentage: overlap ? -0.35 : 0.18,
-                alignment: .center,
-                zOrder: .ascending,
-                dataSource: node
-            )
-        })
-        collection.layoutFrame = CGRect(x: 0, y: 0, width: width, height: 126)
-        for card in cards {
-            let faceUp = state.core.faceUp.contains(card)
-            let face = faceUp ? state.registry.face(card) : nil
-            collection.addLayoutableChild(makeCardNode(face: face, faceUp: faceUp))
-        }
-        collection.layoutIfNeeded()
-        return collection
-    }
-
-    private func makeCardNode(face: StandardFace?, faceUp: Bool) -> LayoutableSKShapeNode {
-        let node = LayoutableSKShapeNode()
-        node.lineWidth = 2
-        if faceUp, let face {
-            node.fillColor = .white
-            node.strokeColor = .darkGray
-            let label = SKLabelNode(text: face.description)
-            label.fontName = "Menlo-Bold"
-            label.fontSize = 24
-            label.fontColor = (face.suit.color == .red) ? .systemRed : .black
-            label.verticalAlignmentMode = .center
-            label.horizontalAlignmentMode = .center
-            label.zPosition = 1
-            node.addChild(label)
-        } else {
-            node.fillColor = SKColor(red: 0.16, green: 0.30, blue: 0.62, alpha: 1.0)
-            node.strokeColor = .white
-        }
-        return node
+    private func drawSeatLabels(_ seat: SeatID, name: String) {
+        let y = rowY(seat)
+        let count = state.core[stock(seat)]?.count ?? 0
+        labelsNode.addChild(textLabel("Stock: \(count)", x: stockX, y: y - cardSize.height * 0.68, size: 14))
+        labelsNode.addChild(textLabel(name, x: stockX, y: y + cardSize.height * 0.68, size: 16, bold: true))
     }
 
     // MARK: - Labels & controls

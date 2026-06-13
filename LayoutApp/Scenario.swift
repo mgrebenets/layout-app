@@ -1,6 +1,6 @@
 import Foundation
 
-/// Defines the available test scenarios for the layout system
+/// One of the playable card games on the GameEngine.
 public struct Scenario: Identifiable, Hashable {
     public let id = UUID()
     public let title: String
@@ -15,13 +15,8 @@ public struct Scenario: Identifiable, Hashable {
 }
 
 public enum ScenarioType: CaseIterable {
-    case overview          // The current "everything-at-once" layout
-    case nestedGrids       // Focus on nested SKCollectionNodes
-    case nodePooling       // Performance test with NodePool
-    case circularAndStack  // Focus on Circular and Stack layouts
-    case dragAndDrop       // Interaction test with NodeCoordinator
-    case war               // Playable War card game on the GameEngine
-    case durak             // Playable Durak card game on the GameEngine
-    case bura              // Playable Bura card game on the GameEngine
-    case solitaire         // Playable Klondike solitaire on the GameEngine
+    case war        // Playable War card game on the GameEngine
+    case durak      // Playable Durak card game on the GameEngine
+    case bura       // Playable Bura card game on the GameEngine
+    case solitaire  // Playable Klondike solitaire on the GameEngine
 }
